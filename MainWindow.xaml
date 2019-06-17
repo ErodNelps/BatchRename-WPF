@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WindowsProgramming"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:local="clr-namespace:WindowsProgamming"
         mc:Ignorable="d"
         Title="BatchReName" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Control.Resources>
@@ -26,13 +27,13 @@
             <DockPanel>
                 <ToolBar DockPanel.Dock="Top" Height="30">
                     <Menu>
-                        <MenuItem Header="Add Method">
-                            <MenuItem Header="New Case"/>
-                            <MenuItem Header="Remove pattern"/>
-                            <MenuItem Header="Replace"/>
-                            <MenuItem Header="Trim"/>
-                            <MenuItem Header="Move"/>
-                            <MenuItem Header="New Name"/>
+                        <MenuItem Name="AddMethodMenuItem" Header="Add Method">
+                            <MenuItem Header="New Case" Click="MethodMenuItemClicked"/>
+                            <MenuItem Header="Remove Pattern" Click="MethodMenuItemClicked"/>
+                            <MenuItem Header="Replace" Click="MethodMenuItemClicked"/>
+                            <MenuItem Header="Trim" Click="MethodMenuItemClicked"/>
+                            <MenuItem Header="Move" Click="MethodMenuItemClicked"/>
+                            <MenuItem Header="New Name" Click="MethodMenuItemClicked"/>
                         </MenuItem>
                     </Menu>
                     <Separator/>
@@ -46,8 +47,28 @@
                     <Button Content="Presets"></Button>
                     <ComboBox Width="125"></ComboBox>
                 </ToolBar>
-                <ListView Margin="5">
-
+                <ListView Name="MethodListView" ItemsSource="{Binding Method}" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Gray" BorderThickness="1">
+                                <DockPanel LastChildFill="True" Background="Lavender">
+                                    <Button Name="DisplayDetailButton" DockPanel.Dock="Left" Background="Transparent" BorderThickness="0" Margin="2, 0, 0, 0">
+                                        <Image Source="images/add.png" RenderOptions.BitmapScalingMode="HighQuality" Width="22" Height="22"></Image>
+                                    </Button>
+                                    <Button Name="RemoveMethodlButton" Click="RemoveMethodlButton_Click" DockPanel.Dock="Right" Background="Transparent" BorderThickness="0"  Margin="0, 0, 5, 0">
+                                        <Image Source="images/cross.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"></Image>
+                                    </Button>
+                                    <CheckBox DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0, 0, 10, 0"></CheckBox>
+                                    <Label Content="{Binding MethodName}" HorizontalContentAlignment="Center" Foreground="Black" FontWeight="DemiBold" FontSize="16"></Label>
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
             </DockPanel>
         </Grid>

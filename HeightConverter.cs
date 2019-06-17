@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace WindowsProgramming
+namespace WindowsProgamming
 {
     public class HeightConverter : IValueConverter
     {

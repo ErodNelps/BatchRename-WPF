@@ -16,6 +16,7 @@ using Microsoft.Win32;
 using System.ComponentModel;
 using System.IO;
 using Winforms = System.Windows.Forms;
+using System.Runtime.CompilerServices;
 
 namespace WindowProjects
 {
@@ -29,6 +30,8 @@ namespace WindowProjects
             InitializeComponent();
             FilePathListBinding.ItemsSource = selectedFileList;
             FolderListBinding.ItemsSource = selectedFolderList;
+            //Add Method
+            MethodListView.ItemsSource = methodList;
             DataContext = this;
         }
 
@@ -86,7 +89,7 @@ namespace WindowProjects
                             {
                                 if (string.Compare(file.Name, selectedFileList[j].fileName) == 0)
                                 {
-                                    MessageBox.Show(file.Name + " is already selected!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                    MessageBox.Show(file.Name + "is already selected!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                                     goto BREAK;
                                 }
                             }
@@ -123,6 +126,7 @@ namespace WindowProjects
                 }
             }
         }
+
         string previousSelectedFolder = " ";
         private void Add_Folder_Clicked(object sender, RoutedEventArgs e)
         {
@@ -162,5 +166,41 @@ namespace WindowProjects
             }
         }
 
+        /// <summary>
+        /// Add Method Class
+        /// </summary>
+        class Method
+        {       
+            private string methodName;
+
+            public string MethodName { get => methodName;
+                set
+                {
+                    methodName = value;
+                    RaiseChangeEvent();
+                }
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            void RaiseChangeEvent([CallerMemberName] string name = null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        BindingList<Method> methodList = new BindingList<Method>();
+
+        private void MethodMenuItemClicked(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = sender as MenuItem;
+            string methodName = mi.Header.ToString();
+            methodList.Add(new Method() { MethodName = methodName });
+        }
+
+        private void RemoveMethodlButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }
