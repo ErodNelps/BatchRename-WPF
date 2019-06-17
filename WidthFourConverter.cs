@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Globalization;
 
-namespace WindowsProgamming
+namespace WindowsProgramming
 {
     class WidthFourConverter : IValueConverter
     {

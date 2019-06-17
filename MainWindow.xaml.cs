@@ -200,7 +200,8 @@ namespace WindowProjects
 
         private void RemoveMethodlButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            var selectedMethod = MethodListView.SelectedItem as Method;
+            methodList.Remove(selectedMethod);
         }
     }
 }

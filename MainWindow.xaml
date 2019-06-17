@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
-        xmlns:local="clr-namespace:WindowsProgamming"
+        xmlns:local="clr-namespace:WindowsProgramming"
         mc:Ignorable="d"
         Title="BatchReName" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Control.Resources>
@@ -48,6 +48,15 @@
                     <ComboBox Width="125"></ComboBox>
                 </ToolBar>
                 <ListView Name="MethodListView" ItemsSource="{Binding Method}" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch">
+                    <ListView.Resources>
+                        <Style TargetType="ListViewItem">
+                            <Style.Triggers>
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                    <Setter Property="IsSelected" Value="True"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.Resources>
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Vertical"></StackPanel>
