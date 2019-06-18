@@ -172,11 +172,24 @@ namespace WindowProjects
         class Method
         {       
             private string methodName;
+            private bool isChecked;
 
-            public string MethodName { get => methodName;
+            public string MethodName
+            {
+                get => methodName;
                 set
                 {
                     methodName = value;
+                    RaiseChangeEvent();
+                }
+            }
+
+            public bool IsChecked
+            {
+                get => isChecked;
+                set
+                {
+                    isChecked = value;
                     RaiseChangeEvent();
                 }
             }
@@ -195,13 +208,21 @@ namespace WindowProjects
         {
             MenuItem mi = sender as MenuItem;
             string methodName = mi.Header.ToString();
-            methodList.Add(new Method() { MethodName = methodName });
+            methodList.Add(new Method() { MethodName = methodName, IsChecked = false });
         }
 
         private void RemoveMethodlButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedMethod = MethodListView.SelectedItem as Method;
             methodList.Remove(selectedMethod);
+        }
+
+        //CheckBox class Method
+        private void MethodCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var selectedMethod = MethodListView.SelectedItem as Method;
+            //MessageBox.Show(selectedMethod.MethodName + ' ' + selectedMethod.IsChecked);
+            selectedMethod.IsChecked = true;
         }
     }
 }
