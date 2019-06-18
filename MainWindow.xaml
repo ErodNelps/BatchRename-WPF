@@ -10,6 +10,7 @@
     <Control.Resources>
         <local:WidthFourConverter x:Key="widthFourConverter" />
         <local:HeightConverter x:Key="heightConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
     </Control.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Top">
@@ -64,18 +65,51 @@
                     </ListView.ItemsPanel>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="Gray" BorderThickness="1">
-                                <DockPanel LastChildFill="True" Background="Lavender">
-                                    <Button Name="DisplayDetailButton" DockPanel.Dock="Left" Background="Transparent" BorderThickness="0" Margin="2, 0, 0, 0">
+                            <StackPanel>
+                                <Border BorderBrush="Gray" BorderThickness="1">
+                                    <DockPanel LastChildFill="True" Background="Lavender">
+                                        <!--<Button Name="DisplayDetailButton" DockPanel.Dock="Left" Background="Transparent" BorderThickness="0" Margin="2, 0, 0, 0">
                                         <Image Source="images/add.png" RenderOptions.BitmapScalingMode="HighQuality" Width="22" Height="22"></Image>
-                                    </Button>                                   
-                                    <Button Name="RemoveMethodlButton" Click="RemoveMethodlButton_Click" DockPanel.Dock="Right" Background="Transparent" BorderThickness="0"  Margin="0, 0, 5, 0">
-                                        <Image Source="images/cross.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"></Image>
-                                    </Button>
-                                    <CheckBox Name="MethodCheckBox" IsChecked="{Binding IsChecked}" Checked="MethodCheckBox_Checked" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0, 0, 10, 0"></CheckBox>
-                                    <Label Content="{Binding MethodName}" HorizontalContentAlignment="Center" Foreground="Black" FontWeight="DemiBold" FontSize="16"></Label>
-                                </DockPanel>
-                            </Border>
+                                        </Button>-->
+                                        <ToggleButton x:Name="DisplayDetailToggleButton" DockPanel.Dock="Left" Background="Transparent" BorderThickness="0" Margin="2, 0, 0, 0">
+                                            <ToggleButton.Resources>
+                                                <DataTemplate x:Key="Unchecked">
+                                                    <Image Source="images/add.png" RenderOptions.BitmapScalingMode="HighQuality" Width="22" Height="22"/>
+                                                </DataTemplate>
+                                                <DataTemplate x:Key="Checked">
+                                                    <Image Source="images/minus.png" RenderOptions.BitmapScalingMode="HighQuality" Width="22" Height="22"/>
+                                                </DataTemplate>
+                                            </ToggleButton.Resources>
+                                            <ToggleButton.Style>
+                                                <Style TargetType="{x:Type ToggleButton}">
+                                                    <Setter Property="ContentTemplate" Value="{StaticResource Unchecked}"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter Property="ContentTemplate" Value="{StaticResource Checked}"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ToggleButton.Style>
+                                        </ToggleButton>
+
+                                        <Button Name="RemoveMethodlButton" Click="RemoveMethodlButton_Click" DockPanel.Dock="Right" Background="Transparent" BorderThickness="0"  Margin="0, 0, 5, 0">
+                                            <Image Source="images/cross.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"></Image>
+                                        </Button>
+
+                                        <CheckBox Name="MethodCheckBox" IsChecked="{Binding IsChecked}" Checked="MethodCheckBox_Checked" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0, 0, 10, 0"></CheckBox>
+
+                                        <Label Content="{Binding MethodName}" HorizontalContentAlignment="Center" Foreground="Black" FontWeight="DemiBold" FontSize="16"></Label>
+                                    </DockPanel>
+                                </Border>
+                                
+                                <StackPanel x:Name="DisplayDetailStackPanel" Visibility="{Binding ElementName=DisplayDetailToggleButton, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" Background="White">
+                                    <TextBlock Text="Some Text" FontSize="16" Margin="5"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="Apply to: " VerticalAlignment="Center" Margin="0, 0, 0, 5"></Label>
+                                        <ComboBox Width="150" Margin="0, 0, 0, 5"></ComboBox>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
