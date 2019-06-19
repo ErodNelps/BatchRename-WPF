@@ -27,7 +27,7 @@
         <Grid Width="250" DockPanel.Dock="Left">
             <DockPanel>
                 <ToolBar DockPanel.Dock="Top" Height="30">
-                    <Menu>
+                    <Menu x:Name="menu">
                         <MenuItem Name="AddMethodMenuItem" Header="Add Method">
                             <MenuItem Header="New Case" Click="MethodMenuItemClicked"/>
                             <MenuItem Header="Remove Pattern" Click="MethodMenuItemClicked"/>

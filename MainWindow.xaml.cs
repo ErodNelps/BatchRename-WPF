@@ -173,9 +173,11 @@ namespace WindowProjects
         {       
             private string methodName;
             private bool isChecked;
-
+            public MenuItem menuItem;
+            
             public string MethodName
             {
+                
                 get => methodName;
                 set
                 {

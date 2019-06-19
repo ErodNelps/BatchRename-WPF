@@ -5,8 +5,10 @@ C:\Users\PC\source\repos\WindowsProgamming\WindowsProgamming\obj\Debug\WindowsPr
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\bin\Debug\WindowsProgamming.exe.config
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\bin\Debug\WindowsProgamming.exe
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\bin\Debug\WindowsProgamming.pdb
+C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\BatchReName.csprojAssemblyReference.cache
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\MainWindow.g.cs
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\App.g.cs
+C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\WindowsProgamming_MarkupCompile.cache
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\WindowsProgamming_MarkupCompile.lref
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\MainWindow.baml
@@ -16,5 +18,3 @@ C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\BatchRe
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\BatchReName.csproj.CoreCompileInputs.cache
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\WindowsProgamming.exe
 C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\WindowsProgamming.pdb
-C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\BatchReName.csprojAssemblyReference.cache
-C:\Users\PC\source\repos\WindowsProgramming\WindowsProgramming\obj\Debug\GeneratedInternalTypeHelper.g.cs
