@@ -31,7 +31,7 @@ namespace WindowProjects
             FilePathListBinding.ItemsSource = selectedFileList;
             FolderListBinding.ItemsSource = selectedFolderList;
             //Add Method
-            MethodListView.ItemsSource = methodList;
+            MethodListView.ItemsSource = methodList;           
             DataContext = this;
         }
 
@@ -204,16 +204,58 @@ namespace WindowProjects
 
         BindingList<Method> methodList = new BindingList<Method>();
 
+        private bool isMethodExist(string methodName)
+        {
+            bool isExist = false;
+            foreach (var item in methodList)
+            {
+                if (methodName == item.MethodName)
+                {
+                    isExist = true;
+                    break;
+                }
+            }
+            return isExist;
+        }
+
         private void MethodMenuItemClicked(object sender, RoutedEventArgs e)
         {
             MenuItem mi = sender as MenuItem;
             string methodName = mi.Header.ToString();
-            methodList.Add(new Method() { MethodName = methodName, IsChecked = false });
+
+            if (methodList.Count == 0)
+            {
+                methodList.Add(new Method() { MethodName = methodName, IsChecked = false });
+                mi.IsChecked = true;
+            }
+            else
+            {
+                if (isMethodExist(methodName))
+                {
+                    MessageBox.Show("Method '" + methodName + "' Already Exist!!", "WARNING", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else
+                {
+                    methodList.Add(new Method() { MethodName = methodName, IsChecked = false });
+                    mi.IsChecked = true;
+                }
+            }           
         }
 
         private void RemoveMethodlButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedMethod = MethodListView.SelectedItem as Method;
+            var selectedMethod = MethodListView.SelectedItem as Method;   
+           
+            for (int i = 0; i < AddMethodMenuItem.Items.Count; i++)
+            {
+                MenuItem selectedItem = (MenuItem)AddMethodMenuItem.Items[i];
+                if ((string)selectedItem.Header == selectedMethod.MethodName)
+                {
+                    selectedItem.IsChecked = false;
+                    break;
+                }
+            }
+
             methodList.Remove(selectedMethod);
         }
 
