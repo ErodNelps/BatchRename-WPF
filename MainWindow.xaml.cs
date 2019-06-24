@@ -228,5 +228,60 @@ namespace WindowProjects
             var selectedMethod = MethodListView.SelectedItem as ReplaceAction;
             selectedMethod.IsChecked = true;
         }
+
+        //METHODS
+        private static int FindFirstAlphabetChar(string str)
+        {
+            if (str == null)
+                return -1;
+
+            for (var i = 0; i < str.Length; i += 1)
+            {
+                if ((str.ElementAt(i) >= 'A' && str.ElementAt(i) <= 'Z') || (str.ElementAt(i) >= 'a' && str.ElementAt(i) <= 'z'))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private static string FirstLetterToUpper(string str)
+        {
+            if (str == null)
+                return null;
+
+            int indexOfFirstChar = FindFirstAlphabetChar(str);
+            if (indexOfFirstChar == -1)
+                return str;
+
+            if (str.Length > 1)
+            {
+                return (str.Substring(0, indexOfFirstChar) + char.ToUpper(str[indexOfFirstChar]) + str.Substring(indexOfFirstChar + 1));
+            }
+
+            return str.ToUpper();
+        }
+
+        private static string FullNameNormalize(string source)
+        {
+            if (source == null)
+                return null;
+
+            //Remove extra space
+            source = String.Join(" ", source.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries));
+            source = FirstLetterToUpper(source);
+
+            return source;
+        }
+
+        private static string UniqueName(string source)
+        {
+            if (source == null)
+                return null;
+
+            string guid = Guid.NewGuid().ToString();
+
+            return guid;
+        }
     }
 }
