@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.IO;
 using Winforms = System.Windows.Forms;
 using System.Runtime.CompilerServices;
+using WindowsProgramming;
 
 namespace WindowProjects
 {
@@ -27,11 +28,12 @@ namespace WindowProjects
     {
         public MainWindow()
         {
+            
             InitializeComponent();
             FilePathListBinding.ItemsSource = selectedFileList;
             FolderListBinding.ItemsSource = selectedFolderList;
             //Add Method
-            MethodListView.ItemsSource = methodList;           
+            MethodListView.ItemsSource = methodList;
             DataContext = this;
         }
 
@@ -43,7 +45,7 @@ namespace WindowProjects
             public string filePath { get; set; }
             public string fileName { get; set; }
             public string fileExtension { get; set; }
-            
+
         }
 
         public class FolderInformation
@@ -71,16 +73,17 @@ namespace WindowProjects
                 selectedFilePath = string.Empty;
                 return;
             }
-            
-            if (multipleSelectedFilePath.Length > 1) {
+
+            if (multipleSelectedFilePath.Length > 1)
+            {
                 for (int i = 0; i < multipleSelectedFilePath.Length; i++)
                 {
                     file = new FileInfo(multipleSelectedFilePath[i]);
                     if (file.Exists)
                     {
                         if (selectedFileList.Count() == 0)
-                        { 
-                            selectedFileList.Add(new FileInformation(){ fileName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });  
+                        {
+                            selectedFileList.Add(new FileInformation() { fileName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
                         }
                         else
                         {
@@ -94,14 +97,15 @@ namespace WindowProjects
                                 }
                             }
                             selectedFileList.Add(new FileInformation() { fileName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
-                            BREAK:;
+                        BREAK:;
                         }
                     }
-                    else {
+                    else
+                    {
                         MessageBox.Show("File(s) selected doesn't exist!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
-                    
+
                 }
             }
             else
@@ -169,85 +173,42 @@ namespace WindowProjects
         /// <summary>
         /// Add Method Class
         /// </summary>
-        class Method
-        {       
-            private string methodName;
-            private bool isChecked;
-            public MenuItem menuItem;
-            
-            public string MethodName
-            {
-                
-                get => methodName;
-                set
-                {
-                    methodName = value;
-                    RaiseChangeEvent();
-                }
-            }
-
-            public bool IsChecked
-            {
-                get => isChecked;
-                set
-                {
-                    isChecked = value;
-                    RaiseChangeEvent();
-                }
-            }
-
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            void RaiseChangeEvent([CallerMemberName] string name = null)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
-        BindingList<Method> methodList = new BindingList<Method>();
-
-        private bool isMethodExist(string methodName)
-        {
-            bool isExist = false;
-            foreach (var item in methodList)
-            {
-                if (methodName == item.MethodName)
-                {
-                    isExist = true;
-                    break;
-                }
-            }
-            return isExist;
-        }
+        //BindingList<Method> methodList = new BindingList<Method>();
+        BindingList<IMethodAction> methodList = new BindingList<IMethodAction>() { };
 
         private void MethodMenuItemClicked(object sender, RoutedEventArgs e)
         {
-            MenuItem mi = sender as MenuItem;
-            string methodName = mi.Header.ToString();
-
-            if (methodList.Count == 0)
-            {
-                methodList.Add(new Method() { MethodName = methodName, IsChecked = false });
-                mi.IsChecked = true;
+            MenuItem item = sender as MenuItem;
+            string methodName = item.Header.ToString();
+            
+            switch (methodName) {
+                case "New Case":
+                    methodList.Add(new NewCaseAction() { MethodName = methodName, IsChecked = true });
+                    break;
+                case "Remove Pattern":
+                    methodList.Add(new RemoveAction() { methodArgs = new RemovePatternArgs() { Pattern = " " }, MethodName = methodName, IsChecked = true });
+                    break;
+                case "Replace":
+                    methodList.Add(new ReplaceAction() { methodArgs = new ReplaceArgs() { Target = " ", Replacer = " " }, MethodName = methodName, IsChecked = true });
+                    break;
+                case "Trim":
+                    methodList.Add(new TrimAction() { methodArgs = new TrimArgs() { initialPos = 0, Length = 0 }, MethodName = methodName, IsChecked = true });                
+                    break;
+                case "Move":
+                    methodList.Add(new MoveAction() { methodArgs = new MoveArgs() { Target = " ", NewPosition = 0}, MethodName = methodName, IsChecked = true });                   
+                    break;
+                case "New Name":
+                    methodList.Add(new NewNameAction() { methodArgs = new NewNameArgs() { NewName = " "}, MethodName = methodName, IsChecked = true });                    
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                if (isMethodExist(methodName))
-                {
-                    MessageBox.Show("Method '" + methodName + "' Already Exist!!", "WARNING", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                else
-                {
-                    methodList.Add(new Method() { MethodName = methodName, IsChecked = false });
-                    mi.IsChecked = true;
-                }
-            }           
         }
 
         private void RemoveMethodlButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedMethod = MethodListView.SelectedItem as Method;   
-           
+            var selectedMethod = MethodListView.SelectedItem as IMethodAction;
+
             for (int i = 0; i < AddMethodMenuItem.Items.Count; i++)
             {
                 MenuItem selectedItem = (MenuItem)AddMethodMenuItem.Items[i];
@@ -264,8 +225,7 @@ namespace WindowProjects
         //CheckBox class Method
         private void MethodCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            var selectedMethod = MethodListView.SelectedItem as Method;
-            //MessageBox.Show(selectedMethod.MethodName + ' ' + selectedMethod.IsChecked);
+            var selectedMethod = MethodListView.SelectedItem as ReplaceAction;
             selectedMethod.IsChecked = true;
         }
     }
