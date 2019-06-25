@@ -8,11 +8,6 @@
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="WindowProjects.MainWindow"
         mc:Ignorable="d"
         Title="BatchReName" Height="450" Width="800" WindowStartupLocation="CenterScreen">
-    <Window.Resources>
-        <local:WidthFourConverter x:Key="widthFourConverter" />
-        <local:HeightConverter x:Key="heightConverter" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    </Window.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Top">
             <ToolBarTray>
@@ -69,9 +64,6 @@
                             <StackPanel>
                                 <Border BorderBrush="Gray" BorderThickness="1">
                                     <DockPanel LastChildFill="True" Background="Lavender">
-                                        <!--<Button Name="DisplayDetailButton" DockPanel.Dock="Left" Background="Transparent" BorderThickness="0" Margin="2, 0, 0, 0">
-                                        <Image Source="images/add.png" RenderOptions.BitmapScalingMode="HighQuality" Width="22" Height="22"></Image>
-                                        </Button>-->
                                         <ToggleButton x:Name="DisplayDetailToggleButton" DockPanel.Dock="Left" Background="Transparent" BorderThickness="0" Margin="2, 0, 0, 0">
                                             <ToggleButton.Resources>
                                                 <DataTemplate x:Key="Unchecked">
@@ -102,13 +94,11 @@
                                         <Label Content="{Binding MethodName}" HorizontalContentAlignment="Center" Foreground="Black" FontWeight="DemiBold" FontSize="16"/>
                                     </DockPanel>
                                 </Border>
-
                                 <StackPanel x:Name="DisplayDetailStackPanel" 
                                             Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=DisplayDetailToggleButton}" Background="White">
-                                    <TextBlock Text="" FontSize="16" Margin="5"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label Content="Apply to: " VerticalAlignment="Center" Margin="0, 0, 0, 5"/>
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding Description}"></TextBlock>
+                                    <Button Content="Edit" Click="UpdateDetail_Clicked"></Button>
+                                    <!--<local:DetailControl x:Name="testing"  />-->
                                 </StackPanel>
                             </StackPanel>
                         </DataTemplate>

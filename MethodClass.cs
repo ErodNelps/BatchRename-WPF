@@ -7,9 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using WindowsProgamming;
 
 namespace WindowsProgramming
 {
+    //Method argument interface
     public interface IMethodArgs
     {
 
@@ -24,7 +26,7 @@ namespace WindowsProgramming
         public int initialPos { get; set; }
         public int Length { get; set; }
     }
-    public class RemovePatternArgs :IMethodArgs
+    public class RemovePatternArgs : IMethodArgs
     {
         public string Pattern { get; set; }
     }
@@ -33,23 +35,27 @@ namespace WindowsProgramming
         public string Target { get; set; }
         public int NewPosition { get; set; }
     }
-    public class NewNameArgs :IMethodArgs
+    public class NewNameArgs : IMethodArgs
     {
         public string NewName { get; set; }
     }
+
+    //Method action interface
     public interface IMethodAction
     {
         string MethodName { get; set; }
         bool IsChecked { get; set; }
         IMethodArgs methodArgs { get; set; }
+        string Description { get; }
         string Process(string origin);
+        void ShowUpdateDetailWindow();
     }
 
     public class ReplaceAction : IMethodAction
     {
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
-        
+
         public IMethodArgs methodArgs { get; set; }
         public string Process(string origin)
         {
@@ -59,11 +65,31 @@ namespace WindowsProgramming
 
         }
 
+        public string Description
+        {
+            get
+            {
+                var args = methodArgs as ReplaceArgs;
+                var result = "Replace";
+                return result;
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        void RaiseChangeEvent([CallerMemberName] string name = null)
+        void RaiseChangeEvent(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public void ShowUpdateDetailWindow()
+        {
+            var screen = new DetailUpdateWindow(
+                methodArgs as ReplaceArgs);
+
+            if (screen.ShowDialog() == true)
+            {
+                RaiseChangeEvent("Description");
+            }
         }
     }
     public class NewCaseAction : IMethodAction
@@ -76,6 +102,33 @@ namespace WindowsProgramming
             string result = " ";
             return result;
         }
+        public string Description
+        {
+            get
+            {
+                var args = methodArgs as ReplaceArgs;
+                var result = "NewCase";
+                return result;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void RaiseChangeEvent(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        }
+        public void ShowUpdateDetailWindow()
+        {
+            var screen = new DetailUpdateWindow(
+                methodArgs as ReplaceArgs);
+
+            if (screen.ShowDialog() == true)
+            {
+                RaiseChangeEvent("Description");
+            }
+        }
     }
     public class RemoveAction : IMethodAction
     {
@@ -86,6 +139,33 @@ namespace WindowsProgramming
         {
             string result = " ";
             return result;
+        }
+        public string Description
+        {
+            get
+            {
+                var args = methodArgs as RemovePatternArgs;
+                var result = "NewCase";
+                return result;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void RaiseChangeEvent(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        }
+        public void ShowUpdateDetailWindow()
+        {
+            var screen = new DetailUpdateWindow(
+                 methodArgs as RemovePatternArgs);
+
+            if (screen.ShowDialog() == true)
+            {
+                RaiseChangeEvent("Description");
+            }
         }
     }
     public class TrimAction : IMethodAction
@@ -98,6 +178,33 @@ namespace WindowsProgramming
             string result = " ";
             return result;
         }
+        public string Description
+        {
+            get
+            {
+                var args = methodArgs as TrimArgs;
+                var result = "NewCase";
+                return result;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void RaiseChangeEvent(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        }
+        public void ShowUpdateDetailWindow()
+        {
+            var screen = new DetailUpdateWindow(
+                 methodArgs as TrimArgs);
+
+            if (screen.ShowDialog() == true)
+            {
+                RaiseChangeEvent("Description");
+            }
+        }
     }
     public class MoveAction : IMethodAction
     {
@@ -109,6 +216,27 @@ namespace WindowsProgramming
             string result = " ";
             return result;
         }
+        public string Description
+        {
+            get
+            {
+                var args = methodArgs as ReplaceArgs;
+                var result = "NewCase";
+                return result;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void RaiseChangeEvent(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        }
+        public void ShowUpdateDetailWindow()
+        {
+            RaiseChangeEvent("Description");
+        }
     }
     public class NewNameAction : IMethodAction
     {
@@ -119,6 +247,27 @@ namespace WindowsProgramming
         {
             string result = " ";
             return result;
+        }
+        public string Description
+        {
+            get
+            {
+                var args = methodArgs as ReplaceArgs;
+                var result = "NewCase";
+                return result;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void RaiseChangeEvent(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        }
+        public void ShowUpdateDetailWindow()
+        {
+            RaiseChangeEvent("Description");
         }
     }
 }

@@ -34,7 +34,7 @@ namespace WindowProjects
             FolderListBinding.ItemsSource = selectedFolderList;
             //Add Method
             MethodListView.ItemsSource = methodList;
-            DataContext = this;
+            DataContext = this;           
         }
 
         BindingList<FileInformation> selectedFileList = new BindingList<FileInformation>();
@@ -179,17 +179,17 @@ namespace WindowProjects
         private void MethodMenuItemClicked(object sender, RoutedEventArgs e)
         {
             MenuItem item = sender as MenuItem;
-            string methodName = item.Header.ToString();
-            
+            string methodName = item.Header.ToString().Replace(" ", string.Empty);
+
             switch (methodName) {
-                case "New Case":
+                case "NewCase":
                     methodList.Add(new NewCaseAction() { MethodName = methodName, IsChecked = true });
                     break;
-                case "Remove Pattern":
-                    methodList.Add(new RemoveAction() { methodArgs = new RemovePatternArgs() { Pattern = " " }, MethodName = methodName, IsChecked = true });
+                case "RemovePattern":
+                    methodList.Add(new RemoveAction() { methodArgs = new RemovePatternArgs() { Pattern = "Pattern" }, MethodName = methodName, IsChecked = true });
                     break;
                 case "Replace":
-                    methodList.Add(new ReplaceAction() { methodArgs = new ReplaceArgs() { Target = " ", Replacer = " " }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new ReplaceAction() { methodArgs = new ReplaceArgs() { Target = "Target Acquired", Replacer = "Avatar" }, MethodName = methodName, IsChecked = true });
                     break;
                 case "Trim":
                     methodList.Add(new TrimAction() { methodArgs = new TrimArgs() { initialPos = 0, Length = 0 }, MethodName = methodName, IsChecked = true });                
@@ -197,12 +197,13 @@ namespace WindowProjects
                 case "Move":
                     methodList.Add(new MoveAction() { methodArgs = new MoveArgs() { Target = " ", NewPosition = 0}, MethodName = methodName, IsChecked = true });                   
                     break;
-                case "New Name":
+                case "NewName":
                     methodList.Add(new NewNameAction() { methodArgs = new NewNameArgs() { NewName = " "}, MethodName = methodName, IsChecked = true });                    
                     break;
                 default:
                     break;
             }
+            
         }
 
         private void RemoveMethodlButton_Click(object sender, RoutedEventArgs e)
@@ -212,7 +213,7 @@ namespace WindowProjects
             for (int i = 0; i < AddMethodMenuItem.Items.Count; i++)
             {
                 MenuItem selectedItem = (MenuItem)AddMethodMenuItem.Items[i];
-                if ((string)selectedItem.Header == selectedMethod.MethodName)
+                if (selectedItem.Header.ToString().Replace(" ", string.Empty) == selectedMethod.MethodName)
                 {
                     selectedItem.IsChecked = false;
                     break;
@@ -229,7 +230,9 @@ namespace WindowProjects
             selectedMethod.IsChecked = true;
         }
 
+        
         //METHODS
+        
         private static int FindFirstAlphabetChar(string str)
         {
             if (str == null)
@@ -282,6 +285,12 @@ namespace WindowProjects
             string guid = Guid.NewGuid().ToString();
 
             return guid;
+        }
+
+        private void UpdateDetail_Clicked(object sender, RoutedEventArgs e)
+        {
+            var item = MethodListView.SelectedItem as IMethodAction;
+            item.ShowUpdateDetailWindow();
         }
     }
 }
