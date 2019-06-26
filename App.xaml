@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:WindowsProgramming"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <local:WidthFourConverter x:Key="widthFourConverter" />
+        <local:HeightConverter x:Key="heightConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:DetailDataTemplateSelector x:Key="myDetailTemplateSelector"/>
     </Application.Resources>
 </Application>

@@ -60,8 +60,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DetailSelector.cs" />
+    <Compile Include="DetailUpdateWindow.xaml.cs">
+      <DependentUpon>DetailUpdateWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HeightConverter.cs" />
+    <Compile Include="MethodClass.cs" />
     <Compile Include="WidthFourConverter.cs" />
+    <Page Include="DetailUpdateWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +109,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\add.png" />
+    <Resource Include="images\cross.png" />
+    <Resource Include="images\minus.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
