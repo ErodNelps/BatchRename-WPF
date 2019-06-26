@@ -4,50 +4,75 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowsProgamming"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         mc:Ignorable="d"
-        Title="DetailUpdateWindow" Height="115" Width="420" WindowStartupLocation="CenterScreen">
-    <!--<Window.Resources>
+        Title="DetailUpdateWindow" x:Name="UpdateWindow" Height="160" Width="325" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
         <DataTemplate x:Key="NewCaseDetailTemplate">
             <StackPanel>
-
                 <TextBlock Text="New Case" FontSize="16" Margin="5"/>
             </StackPanel>
         </DataTemplate>
 
         <DataTemplate x:Key="ReplaceDetailTemplate">
-            <StackPanel>
-                <TextBox Text="{Binding Target}" FontSize="16" Height="40" Width="200"/>
-                <TextBox Text="{Binding Replacer}" FontSize="16" Height="40" Width="200" Canvas.Top="45"/>
-            </StackPanel>
+            <Canvas>
+                <Label Content="Replace:" FontSize="16" Canvas.Left="5" Canvas.Top="5"></Label>
+                <Label Content="With:" FontSize="16" Canvas.Left="5" Canvas.Top="45" ></Label>
+
+                <StackPanel Canvas.Left="80">
+                    <TextBox Text="{Binding Target, diag:PresentationTraceSources.TraceLevel=High}" FontSize="16" Height="40" Width="200" Margin="0, 0, 0, 5"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                    <TextBox Text="{Binding Replacer, diag:PresentationTraceSources.TraceLevel=High}" FontSize="16" Height="40" Width="200" Margin="0, 0, 0, 5"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                </StackPanel>
+            </Canvas>
         </DataTemplate>
 
         <DataTemplate x:Key="MoveDetailTemplate">
-            <TextBlock Text="Move" FontSize="16" Margin="5"/>
+            <Canvas>
+                <Label Content="Move:" FontSize="16" Canvas.Left="5" Canvas.Top="5"></Label>
+                <Label Content="To position:" FontSize="16" Canvas.Left="5" Canvas.Top="45" ></Label>
+
+                <StackPanel Canvas.Left="100">
+                    <TextBox Text="{Binding Target}" FontSize="16" Height="40" Width="200" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                    <TextBox Text="{Binding NewPosition}" FontSize="16" Height="40" Width="200" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                </StackPanel>
+            </Canvas>
         </DataTemplate>
 
         <DataTemplate x:Key="RemovePatternDetailTemplate">
-            <TextBlock Text="Remove" FontSize="16" Margin="5"/>
+            <Canvas>
+                <Label Content="Remove:" FontSize="16" Canvas.Left="5" Canvas.Top="5"></Label>
+                <StackPanel Canvas.Left="80">
+                    <TextBox Text="{Binding Pattern}" FontSize="16" Height="40" Width="200" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                </StackPanel>
+            </Canvas>
         </DataTemplate>
 
         <DataTemplate x:Key="TrimDetailTemplate">
-            <TextBlock Text="Trim" FontSize="16" Margin="5"/>
+            <Canvas>
+                <Label Content="From position:" FontSize="13" Canvas.Left="5" Canvas.Top="5"></Label>
+                <Label Content="Length:" FontSize="13" Canvas.Left="5" Canvas.Top="45" ></Label>
+
+                <StackPanel Canvas.Left="100">
+                    <TextBox Text="{Binding initialPos}" FontSize="16" Height="40" Width="180" Margin="0, 0, 0, 5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                    <TextBox Text="{Binding Length}" FontSize="16" Height="40" Width="180" Margin="0, 0, 0, 5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                </StackPanel>
+            </Canvas>
         </DataTemplate>
 
         <DataTemplate x:Key="NewNameDetailTemplate">
-            <TextBlock Text="NewName" FontSize="16" Margin="5"/>
+            <Canvas>
+                <Label Content="New name:" FontSize="16" Canvas.Left="5" Canvas.Top="5"></Label>
+                <StackPanel Canvas.Left="100">
+                    <TextBox Text="{Binding NewName}" FontSize="16" Height="40" Width="180" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                </StackPanel>
+            </Canvas>
         </DataTemplate>
-    </Window.Resources>-->
+    </Window.Resources>
     <Canvas>
-
-        <TextBox Text="{Binding Pattern}" FontSize="16" Height="40" Width="200"/>
-        <TextBox Text="{Binding Pattern}" FontSize="16" Height="40" Width="200" Canvas.Top="45"/>
-
-        <TextBox Text="{Binding Target}" FontSize="16" Height="40" Width="200"/>
-        <TextBox Text="{Binding Replacer}" FontSize="16" Height="40" Width="200" Canvas.Top="45"/>
-
-        <TextBox Text="{Binding initialPos}" FontSize="16" Height="35" Width="190" Canvas.Top="5" Canvas.Left="10"/>
-        <TextBox Text="{Binding Length}" FontSize="16" Height="35" Width="190" Canvas.Top="45" Canvas.Left="10"/>
-        <Button Name="okButton" IsDefault="True" Click="OkButton_Click" Content="Update" Width="50" Height="25" Canvas.Left="235" Canvas.Top="34"/>
-        <Button Name="cancelButton" IsCancel="True" Content="Cancel" Width="50" Height="25" Canvas.Left="324" Canvas.Top="34"/>
+        <ContentControl Name="contentCtrl" Content="{Binding}" ContentTemplateSelector="{StaticResource myDetailTemplateSelector}" Canvas.Left="5" Canvas.Top="5" Width="300"/>
+        <Button Name="okButton" IsDefault="True" Click="OkButton_Click" Content="Update" Width="50" Height="25" Canvas.Left="171" Canvas.Top="94"/>
+        <Button Name="cancelButton" IsCancel="True" Content="Cancel" Width="50" Height="25" Canvas.Left="235" Canvas.Top="94" RenderTransformOrigin="0.526,0.03"/>
     </Canvas>
 </Window>

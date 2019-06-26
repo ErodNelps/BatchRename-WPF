@@ -8,12 +8,11 @@ using System.Windows.Controls;
 
 namespace WindowsProgramming
 {
-
     //Detail Data Template Selector
     public class DetailDataTemplateSelector : DataTemplateSelector
     {
         public DataTemplate NewCaseDetailTemplate { get; set; }
-        public DataTemplate RemoveDetailTemplate { get; set; }
+        public DataTemplate RemovePatternDetailTemplate { get; set; }
         public DataTemplate ReplaceDetailTemplate { get; set; }
         public DataTemplate TrimDetailTemplate { get; set; }
         public DataTemplate MoveDetailTemplate { get; set; }
@@ -21,9 +20,10 @@ namespace WindowsProgramming
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            ReplaceArgs args = item as ReplaceArgs;
-            var strings = item.ToString();
-            return ((FrameworkElement)container).FindResource("ReplaceDetailTemplate") as DataTemplate;
+            IMethodArgs args = item as IMethodArgs;
+            if(item == null)
+                return ((FrameworkElement)container).FindResource("ReplaceDetailTemplate") as DataTemplate;
+            return ((FrameworkElement)container).FindResource(args.methodType + "DetailTemplate") as DataTemplate;
         }
     }
 
