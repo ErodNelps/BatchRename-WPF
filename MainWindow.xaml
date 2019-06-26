@@ -16,7 +16,7 @@
                     <Separator/>
                     <Button Content="Help"/>
                     <Separator/>
-                    <Button Content="Start Batch"/>
+                    <Button Content="Start Batch" Click="Starting_Batch"/>
                 </ToolBar>
             </ToolBarTray>
         </StackPanel>
@@ -98,7 +98,6 @@
                                             Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=DisplayDetailToggleButton}" Background="White">
                                     <TextBlock Text="{Binding Description}"></TextBlock>
                                     <Button Content="Edit" Click="UpdateDetail_Clicked"></Button>
-                                    <!--<local:DetailControl x:Name="testing"  />-->
                                 </StackPanel>
                             </StackPanel>
                         </DataTemplate>

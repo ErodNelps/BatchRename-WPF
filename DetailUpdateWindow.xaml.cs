@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WindowsProgramming;
-
+using System.Diagnostics;
 namespace WindowsProgamming
 {
     /// <summary>
@@ -20,25 +20,12 @@ namespace WindowsProgamming
     /// </summary>
     public partial class DetailUpdateWindow : Window
     {
-        public DetailUpdateWindow(IMethodArgs replaceArgs)
+        public DetailUpdateWindow(IMethodArgs Args)
         {
-            DataContext = replaceArgs;
             InitializeComponent();
-            
+            contentCtrl.DataContext = Args;
+            UpdateWindow.Title = Args.methodType;
         }
-
-        //public DetailUpdateWindow(RemovePatternArgs removePatternArgs)
-        //{
-        //    DataContext = removePatternArgs;
-        //    InitializeComponent();
-            
-        //}
-
-        //public DetailUpdateWindow(TrimArgs trimArgs)
-        //{
-        //    DataContext = trimArgs;
-        //    InitializeComponent();
-        //}
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
