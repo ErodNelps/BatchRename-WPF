@@ -112,8 +112,19 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\add.png" />
+    <Resource Include="images\add2.png" />
+    <Resource Include="images\add3.png" />
+    <Resource Include="images\clear.png" />
     <Resource Include="images\cross.png" />
+    <Resource Include="images\doubledown.png" />
+    <Resource Include="images\doubleup.png" />
+    <Resource Include="images\down.png" />
+    <Resource Include="images\edit.png" />
+    <Resource Include="images\help.png" />
     <Resource Include="images\minus.png" />
+    <Resource Include="images\refresh.png" />
+    <Resource Include="images\start.png" />
+    <Resource Include="images\up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

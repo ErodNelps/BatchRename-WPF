@@ -12,11 +12,26 @@
         <StackPanel DockPanel.Dock="Top">
             <ToolBarTray>
                 <ToolBar Height="30">
-                    <Button Content="Refresh"/>
+                    <Button Background="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="images/refresh.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"/>
+                            <TextBlock Text="Refresh" Margin="4,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </Button>
                     <Separator/>
-                    <Button Content="Help"/>
+                    <Button Background="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="images/help.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"/>
+                            <TextBlock Text="Help" Margin="4,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </Button>
                     <Separator/>
-                    <Button Content="Start Batch" Click="Starting_Batch"/>
+                    <Button Background="Transparent" Click="Starting_Batch">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="images/start.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                            <TextBlock Text="Start Batch" FontWeight="Bold" Margin="2,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </Button>
                 </ToolBar>
             </ToolBarTray>
         </StackPanel>
@@ -24,7 +39,10 @@
             <DockPanel>
                 <ToolBar DockPanel.Dock="Top" Height="30">
                     <Menu x:Name="menu">
-                        <MenuItem x:Name="AddMethodMenuItem" Header="Add Method">
+                        <MenuItem x:Name="AddMethodMenuItem" Header="Add Method" FontWeight="Bold" VerticalAlignment="Center">
+                            <MenuItem.Icon>
+                                <Image Source="images/add2.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="16" Margin="0,0,-8,0"/>
+                            </MenuItem.Icon>
                             <MenuItem Header="New Case" Click="MethodMenuItemClicked" />
                             <MenuItem Header="Remove Pattern" Click="MethodMenuItemClicked" />
                             <MenuItem Header="Replace" Click="MethodMenuItemClicked" />
@@ -34,7 +52,12 @@
                         </MenuItem>
                     </Menu>
                     <Separator/>
-                    <Button Content="Clear"/>
+                    <Button Background="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="images/clear.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                            <TextBlock Text="Clear" Margin="4,0,0,0"></TextBlock>
+                        </StackPanel>
+                    </Button>
                     <Separator/>
                 </ToolBar>
 
@@ -114,10 +137,26 @@
                             <ToolBarTray>
                                 <ToolBar>
                                     <Border Width="60" Height="25" CornerRadius="10">
-
-                                        <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Content="Add"
-         Background="Transparent" FontSize="14" Width="60" Height="25" BorderBrush="Transparent" BorderThickness="1" Click="Add_File_Clicked" Margin="0,2,0,-2"/>
+                                        <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Background="Transparent" FontSize="14" Width="60" Height="30" BorderBrush="Transparent" BorderThickness="1" Click="Add_File_Clicked" Margin="0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="images/add3.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                                <TextBlock Text="Add" Margin="4,0,0,0"></TextBlock>
+                                            </StackPanel>
+                                        </Button>
                                     </Border>
+                                    <Separator/>
+                                    <Button Background="Transparent">
+                                        <Image Source="images/up.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                    </Button>
+                                    <Button Background="Transparent">
+                                        <Image Source="images/down.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                    </Button>
+                                    <Button Background="Transparent">
+                                        <Image Source="images/doubleup.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                    </Button>
+                                    <Button Background="Transparent">
+                                        <Image Source="images/doubledown.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                    </Button>
                                 </ToolBar>
                             </ToolBarTray>
                         </StackPanel>
@@ -156,9 +195,26 @@
                                 <ToolBar>
                                     <Border Width="60" Height="25" CornerRadius="10">
 
-                                        <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Content="Add"
-         Background="Transparent" FontSize="14" Width="60" Height="25" BorderBrush="Transparent" BorderThickness="1" Click="Add_Folder_Clicked" Margin="0,2,0,-2"/>
+                                        <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Background="Transparent" FontSize="14" Width="60" Height="30" BorderBrush="Transparent" BorderThickness="1" Click="Add_File_Clicked" Margin="0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="images/add3.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                                <TextBlock Text="Add" Margin="4,0,0,0"></TextBlock>
+                                            </StackPanel>
+                                        </Button>
                                     </Border>
+                                    <Separator/>
+                                    <Button Background="Transparent">
+                                        <Image Source="images/up.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                    </Button>
+                                    <Button Background="Transparent">
+                                        <Image Source="images/down.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                    </Button>
+                                    <Button Background="Transparent">
+                                        <Image Source="images/doubleup.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                    </Button>
+                                    <Button Background="Transparent">
+                                        <Image Source="images/doubledown.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                    </Button>
                                 </ToolBar>
                             </ToolBarTray>
                         </StackPanel>
