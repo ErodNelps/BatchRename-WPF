@@ -45,9 +45,9 @@
         <TextBox Text="{Binding Target}" FontSize="16" Height="40" Width="200"/>
         <TextBox Text="{Binding Replacer}" FontSize="16" Height="40" Width="200" Canvas.Top="45"/>
 
-        <TextBox Text="{Binding initialPos}" FontSize="16" Height="40" Width="200"/>
-        <TextBox Text="{Binding Length}" FontSize="16" Height="40" Width="200" Canvas.Top="45"/>
-        <Button Name="okButton" IsDefault="True" Click="OkButton_Click" Content="Update" Width="50" Height="25" Canvas.Left="214" Canvas.Top="34"/>
-        <Button Name="cancelButton" IsCancel="True" Content="Cancel" Width="50" Height="25" Canvas.Left="289" Canvas.Top="34"/>
+        <TextBox Text="{Binding initialPos}" FontSize="16" Height="35" Width="190" Canvas.Top="5" Canvas.Left="10"/>
+        <TextBox Text="{Binding Length}" FontSize="16" Height="35" Width="190" Canvas.Top="45" Canvas.Left="10"/>
+        <Button Name="okButton" IsDefault="True" Click="OkButton_Click" Content="Update" Width="50" Height="25" Canvas.Left="235" Canvas.Top="34"/>
+        <Button Name="cancelButton" IsCancel="True" Content="Cancel" Width="50" Height="25" Canvas.Left="324" Canvas.Top="34"/>
     </Canvas>
 </Window>
