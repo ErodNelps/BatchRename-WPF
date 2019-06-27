@@ -151,16 +151,16 @@
                                         </Button>
                                     </Border>
                                     <Separator/>
-                                    <Button Background="Transparent">
+                                    <Button Background="Transparent" Click="UpFileButton_Click">
                                         <Image Source="images/up.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                     </Button>
-                                    <Button Background="Transparent">
+                                    <Button Background="Transparent" Click="DownFileButton_Click">
                                         <Image Source="images/down.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                     </Button>
-                                    <Button Background="Transparent">
+                                    <Button Background="Transparent" Click="UpMostFileButton_Click">
                                         <Image Source="images/doubleup.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                     </Button>
-                                    <Button Background="Transparent">
+                                    <Button Background="Transparent" Click="DownMostFileButton_Click">
                                         <Image Source="images/doubledown.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                     </Button>
                                 </ToolBar>
@@ -209,16 +209,16 @@
                                         </Button>
                                     </Border>
                                     <Separator/>
-                                    <Button Background="Transparent">
+                                    <Button Background="Transparent" Click="UpFolderButton_click">
                                         <Image Source="images/up.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                     </Button>
-                                    <Button Background="Transparent">
+                                    <Button Background="Transparent" Click="DownFolderButton_click">
                                         <Image Source="images/down.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                     </Button>
-                                    <Button Background="Transparent">
+                                    <Button Background="Transparent" Click="UpMostFolderButton_click">
                                         <Image Source="images/doubleup.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                     </Button>
-                                    <Button Background="Transparent">
+                                    <Button Background="Transparent" Click="DownMostFolderButton_click">
                                         <Image Source="images/doubledown.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                     </Button>
                                 </ToolBar>
