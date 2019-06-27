@@ -198,7 +198,7 @@ namespace WindowsProgramming
             get
             {
                 var args = methodArgs as RemovePatternArgs;
-                var result = "NewCase";
+                var result = $"Remove {args.Pattern}";
                 return result;
             }
         }
@@ -236,7 +236,7 @@ namespace WindowsProgramming
             get
             {
                 var args = methodArgs as TrimArgs;
-                var result = "NewCase";
+                var result = $"Trim character(s): ";
                 return result;
             }
         }
@@ -274,7 +274,7 @@ namespace WindowsProgramming
             get
             {
                 var args = methodArgs as ReplaceArgs;
-                var result = "NewCase";
+                var result = $"Move to ";
                 return result;
             }
         }
