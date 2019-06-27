@@ -305,5 +305,17 @@ namespace WindowProjects
                 File.Move(originalPath, selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName));
             }
         }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            methodList.Clear();
+            selectedFileList.Clear();
+            selectedFolderList.Clear();
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            methodList.Clear();
+        }
     }
 }

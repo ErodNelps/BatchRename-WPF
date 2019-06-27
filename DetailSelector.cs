@@ -22,7 +22,7 @@ namespace WindowsProgramming
         {
             IMethodArgs args = item as IMethodArgs;
             if(item == null)
-                return ((FrameworkElement)container).FindResource("NewCaseDetailTemplate") as DataTemplate;
+                return ((FrameworkElement)container).FindResource("ReplaceDetailTemplate") as DataTemplate;
             return ((FrameworkElement)container).FindResource(args.methodType + "DetailTemplate") as DataTemplate;
         }
     }

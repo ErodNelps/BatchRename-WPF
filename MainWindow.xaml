@@ -12,7 +12,7 @@
         <StackPanel DockPanel.Dock="Top">
             <ToolBarTray>
                 <ToolBar Height="30">
-                    <Button Background="Transparent">
+                    <Button Background="Transparent" Click="RefreshButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="images/refresh.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"/>
                             <TextBlock Text="Refresh" Margin="4,0,0,0"></TextBlock>
@@ -52,7 +52,7 @@
                         </MenuItem>
                     </Menu>
                     <Separator/>
-                    <Button Background="Transparent">
+                    <Button Background="Transparent" Click="ClearButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="images/clear.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                             <TextBlock Text="Clear" Margin="4,0,0,0"></TextBlock>
@@ -67,7 +67,7 @@
                     <Button Content="Presets"/>
                     <ComboBox Width="125"/>
                 </ToolBar>
-                <ListView x:Name="MethodListView" ItemsSource="{Binding IMethodAction}" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch">
+                <ListView x:Name="MethodListView" ItemsSource="{Binding IMethodAction}" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch">
                     <ListView.Resources>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Style.Triggers>
@@ -117,11 +117,17 @@
                                         <Label Content="{Binding MethodName}" HorizontalContentAlignment="Center" Foreground="Black" FontWeight="DemiBold" FontSize="16"/>
                                     </DockPanel>
                                 </Border>
-                                <StackPanel x:Name="DisplayDetailStackPanel" 
-                                            Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=DisplayDetailToggleButton}" Background="White">
-                                    <TextBlock Text="{Binding Description}"></TextBlock>
-                                    <Button Content="Edit" Click="UpdateDetail_Clicked"></Button>
-                                </StackPanel>
+                                <Border BorderBrush="Black" BorderThickness="0.5" Height="80" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=DisplayDetailToggleButton}">
+                                    <Canvas x:Name="DisplayDetailStackPanel" Background="White" Height="70">
+                                        <TextBlock Text="{Binding Description}" Margin="5" HorizontalAlignment="Center"></TextBlock>
+                                        <Button Click="UpdateDetail_Clicked" Background="Lavender" Width="50" Height="20" Canvas.Left="172" Canvas.Top="50">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="images/edit.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"/>
+                                                <TextBlock Text="Edit"></TextBlock>
+                                            </StackPanel>
+                                        </Button>
+                                    </Canvas>
+                                </Border>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -195,7 +201,7 @@
                                 <ToolBar>
                                     <Border Width="60" Height="25" CornerRadius="10">
 
-                                        <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Background="Transparent" FontSize="14" Width="60" Height="30" BorderBrush="Transparent" BorderThickness="1" Click="Add_File_Clicked" Margin="0">
+                                        <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Background="Transparent" FontSize="14" Width="60" Height="30" BorderBrush="Transparent" BorderThickness="1" Click="Add_Folder_Clicked" Margin="0">
                                             <StackPanel Orientation="Horizontal">
                                                 <Image Source="images/add3.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                                 <TextBlock Text="Add" Margin="4,0,0,0"></TextBlock>
