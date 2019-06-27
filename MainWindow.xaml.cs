@@ -317,5 +317,195 @@ namespace WindowProjects
         {
             methodList.Clear();
         }
+
+        private void SwapFile(int indexA, int indexB)
+        {
+            var temp = selectedFileList[indexA];
+            selectedFileList[indexA] = selectedFileList[indexB];
+            selectedFileList[indexB] = temp;
+        }
+
+        private void UpFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (FilePathListBinding.SelectedItem == null)
+            {
+                MessageBox.Show("Please select item!!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int selectedIndex = FilePathListBinding.SelectedIndex;
+
+            if (selectedIndex == 0)
+            {
+                FilePathListBinding.SelectedItem = selectedFileList[0];
+                return;
+            }
+            else
+            {
+                SwapFile(selectedIndex, selectedIndex - 1);
+                FilePathListBinding.SelectedItem = selectedFileList[selectedIndex - 1];
+            } 
+        }
+
+        private void DownFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (FilePathListBinding.SelectedItem == null)
+            {
+                MessageBox.Show("Please select item!!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int selectedIndex = FilePathListBinding.SelectedIndex;
+
+            if (selectedIndex == selectedFileList.Count - 1)
+            {
+                FilePathListBinding.SelectedItem = selectedFileList[selectedFileList.Count - 1];
+                return;
+            }
+            else
+            {
+                SwapFile(selectedIndex, selectedIndex + 1);
+                FilePathListBinding.SelectedItem = selectedFileList[selectedIndex + 1];
+            }
+        }
+
+        private void UpMostFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (FilePathListBinding.SelectedItem == null)
+            {
+                MessageBox.Show("Please select item!!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int selectedIndex = FilePathListBinding.SelectedIndex;
+
+            if (selectedIndex == 0)
+            {
+                return;
+            }
+            else
+            {
+                selectedFileList.Insert(0, selectedFileList[selectedIndex]);
+                selectedFileList.RemoveAt(selectedIndex + 1);
+                FilePathListBinding.SelectedItem = selectedFileList[0];
+            }
+        }
+
+        private void DownMostFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (FilePathListBinding.SelectedItem == null)
+            {
+                MessageBox.Show("Please select item!!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int selectedIndex = FilePathListBinding.SelectedIndex;
+
+            if (selectedIndex == selectedFileList.Count - 1)
+            {
+                return;
+            }
+            else
+            {
+                selectedFileList.Insert(selectedFileList.Count, selectedFileList[selectedIndex]);
+                selectedFileList.RemoveAt(selectedIndex);
+                FilePathListBinding.SelectedItem = selectedFileList[selectedFileList.Count - 1];
+            }
+        }
+
+        private void SwapFolder(int indexA, int indexB)
+        {
+            var temp = selectedFolderList[indexA];
+            selectedFolderList[indexA] = selectedFolderList[indexB];
+            selectedFolderList[indexB] = temp;
+        }
+
+        private void UpFolderButton_click(object sender, RoutedEventArgs e)
+        {
+            if (FolderListBinding.SelectedItem == null)
+            {
+                MessageBox.Show("Please select item!!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int selectedIndex = FolderListBinding.SelectedIndex;
+
+            if (selectedIndex == 0)
+            {
+                FolderListBinding.SelectedItem = selectedFolderList[0];
+                return;
+            }
+            else
+            {
+                SwapFolder(selectedIndex, selectedIndex - 1);
+                FolderListBinding.SelectedItem = selectedFolderList[selectedIndex - 1];
+            }
+        }
+
+        private void DownFolderButton_click(object sender, RoutedEventArgs e)
+        {
+            if (FolderListBinding.SelectedItem == null)
+            {
+                MessageBox.Show("Please select item!!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int selectedIndex = FolderListBinding.SelectedIndex;
+
+            if (selectedIndex == selectedFolderList.Count - 1)
+            {
+                FolderListBinding.SelectedItem = selectedFolderList[selectedFolderList.Count - 1];
+                return;
+            }
+            else
+            {
+                SwapFolder(selectedIndex, selectedIndex + 1);
+                FolderListBinding.SelectedItem = selectedFolderList[selectedIndex + 1];
+            }
+        }
+
+        private void UpMostFolderButton_click(object sender, RoutedEventArgs e)
+        {
+            if (FolderListBinding.SelectedItem == null)
+            {
+                MessageBox.Show("Please select item!!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int selectedIndex = FolderListBinding.SelectedIndex;
+
+            if (selectedIndex == 0)
+            {
+                return;
+            }
+            else
+            {
+                selectedFolderList.Insert(0, selectedFolderList[selectedIndex]);
+                selectedFolderList.RemoveAt(selectedIndex + 1);
+                FolderListBinding.SelectedItem = selectedFolderList[0];
+            }
+        }
+
+        private void DownMostFolderButton_click(object sender, RoutedEventArgs e)
+        {
+            if (FolderListBinding.SelectedItem == null)
+            {
+                MessageBox.Show("Please select item!!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int selectedIndex = FolderListBinding.SelectedIndex;
+
+            if (selectedIndex == selectedFolderList.Count - 1)
+            {
+                return;
+            }
+            else
+            {
+                selectedFolderList.Insert(selectedFolderList.Count, selectedFolderList[selectedIndex]);
+                selectedFolderList.RemoveAt(selectedIndex);
+                FolderListBinding.SelectedItem = selectedFolderList[selectedFolderList.Count - 1];
+            }
+        }
     }
 }
