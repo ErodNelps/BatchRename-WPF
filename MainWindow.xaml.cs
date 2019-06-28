@@ -18,6 +18,8 @@ using System.IO;
 using Winforms = System.Windows.Forms;
 using System.Runtime.CompilerServices;
 using WindowsProgramming;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 
 namespace WindowProjects
 {
@@ -28,15 +30,36 @@ namespace WindowProjects
     {
         public MainWindow()
         {
-            
             InitializeComponent();
             FilePathListBinding.ItemsSource = selectedFileList;
             FolderListBinding.ItemsSource = selectedFolderList;
             //Add Method
             MethodListView.ItemsSource = methodList;
+
+            //CREATE A FILE CONTAINS PRESETS
+            FileInfo newFile = new FileInfo("C:\\Users\\Admin\\Desktop\\PresetsFile.txt");
+            if (!newFile.Exists)
+            {
+                FileStream fs = newFile.Create();
+                fs.Close();
+            }
+
+            //PRESET COMBOBOX
+            using (StreamReader sr = presetsPathFile.OpenText())
+            {
+                string PresetFilePath = "";
+                while ((PresetFilePath = sr.ReadLine()) != null)
+                {
+                    FileInfo PresetFile = new FileInfo(PresetFilePath);
+                    savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = PresetFilePath, fileExtension = PresetFile.Extension });
+                }
+            }
+
+            PresetCombobox.ItemsSource = savedPresetFiles;
+            PresetCombobox.DisplayMemberPath = "fileName";
             DataContext = this;           
         }
-
+ 
         BindingList<FileInformation> selectedFileList = new BindingList<FileInformation>();
         BindingList<FolderInformation> selectedFolderList = new BindingList<FolderInformation>();
 
@@ -318,6 +341,7 @@ namespace WindowProjects
             methodList.Clear();
         }
 
+        //ARROW BUTTON HANDLER
         private void SwapFile(int indexA, int indexB)
         {
             var temp = selectedFileList[indexA];
@@ -506,6 +530,65 @@ namespace WindowProjects
                 selectedFolderList.RemoveAt(selectedIndex);
                 FolderListBinding.SelectedItem = selectedFolderList[selectedFolderList.Count - 1];
             }
+        }
+
+        //SAVE AND LOAD PRESET
+        public static void WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
+        {
+            using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                binaryFormatter.Serialize(stream, objectToWrite);
+            }
+        }
+
+        public static T ReadFromBinaryFile<T>(string filePath)
+        {
+            using (Stream stream = File.Open(filePath, FileMode.Open))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                return (T)binaryFormatter.Deserialize(stream);
+            }
+        }
+
+        FileInfo presetsPathFile = new FileInfo("C:\\Users\\Admin\\Desktop\\PresetsFile.txt");
+        BindingList<FileInformation> savedPresetFiles = new BindingList<FileInformation>();
+        
+        private void SavePresetButton_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Preset file (*.bin)| *.bin";
+            saveFileDialog.DefaultExt = "*.bin";
+            saveFileDialog.OverwritePrompt = true;
+
+            //TODO: get preset name/location from user (save to saveLoc)
+            string saveLoc = "./preset.bin";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                saveLoc = saveFileDialog.FileName;
+            }
+
+            //Write methodList to binary file
+            WriteToBinaryFile<BindingList<IMethodAction>>(saveLoc, methodList, false);
+
+            //Add file name into List
+            FileInfo PresetFile = new FileInfo(saveLoc);
+            savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = saveLoc, fileExtension = PresetFile.Extension });
+
+            //Write preset file path to .txt
+            using (StreamWriter sw = presetsPathFile.AppendText())
+            {
+                sw.WriteLine(saveLoc);
+            }
+        }
+
+        private void PresetCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //Load File
+            FileInformation loadedPresetFilePath = (FileInformation)PresetCombobox.SelectedItem;
+            methodList = ReadFromBinaryFile<BindingList<IMethodAction>>(loadedPresetFilePath.filePath);
+            methodList.ResetBindings();
         }
     }
 }

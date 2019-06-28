@@ -62,10 +62,12 @@
                 </ToolBar>
 
                 <ToolBar DockPanel.Dock="Top" Height="30">
-                    <Button Content="Refresh"/>
+                    <Button Background="Transparent" Click="SavePresetButton_Click">
+                        <Image Source="images/save.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"/>
+                    </Button>
                     <Separator/>
-                    <Button Content="Presets"/>
-                    <ComboBox Width="125"/>
+                    <Label Content="Presets:"/>
+                    <ComboBox Width="135" Name="PresetCombobox" SelectionChanged="PresetCombobox_SelectionChanged"></ComboBox>
                 </ToolBar>
                 <ListView x:Name="MethodListView" ItemsSource="{Binding IMethodAction}" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch">
                     <ListView.Resources>
