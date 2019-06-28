@@ -32,6 +32,12 @@ namespace WindowsProgamming
             DialogResult = true;
             Close();
         }
+
+        private void StyleSelection_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            var method = sender as NewCaseAction;
+            
+        }
     }
 }
 

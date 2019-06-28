@@ -25,7 +25,10 @@ namespace WindowsProgramming
             {
                 return "NewCase";
             }
-        }        
+        }
+        public List<string> Style {
+            get { return new List<string>() { "1", "2", "3" }; }
+        }
     }
     //Replace Args
     public class ReplaceArgs : IMethodArgs
@@ -50,8 +53,7 @@ namespace WindowsProgramming
                 return "Trim";
             }
         }
-        public int initialPos { get; set; }
-        public int Length { get; set; }
+        public string trimChars { get; set; }
     }
     //Remove Args
     public class RemovePatternArgs : IMethodArgs
@@ -76,8 +78,9 @@ namespace WindowsProgramming
                 return "Move";
             }
         }
-        public string Target { get; set; }
-        public int NewPosition { get; set; }
+        public int FromPos { get; set; }
+        public int Length { get; set; }
+        public int ToPos { get; set; }
     }
     //New Name Args
     public class NewNameArgs : IMethodArgs
@@ -149,17 +152,19 @@ namespace WindowsProgramming
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
         public IMethodArgs methodArgs { get; set; }
+
         public string Process(string origin)
         {
-            string result = " ";
+            var args = methodArgs as NewCaseArgs;
+            var result = "NewCase";
             return result;
         }
         public string Description
         {
             get
             {
-                var args = methodArgs as ReplaceArgs;
-                var result = "NewCase";
+                var args = methodArgs as NewCaseArgs;
+                var result = "Case: ";
                 return result;
             }
         }
@@ -174,7 +179,7 @@ namespace WindowsProgramming
         public void ShowUpdateDetailWindow()
         {
             var window = new DetailUpdateWindow(
-                methodArgs as ReplaceArgs);
+                methodArgs as NewCaseArgs);
 
             if (window.ShowDialog() == true)
             {
@@ -228,7 +233,14 @@ namespace WindowsProgramming
         public IMethodArgs methodArgs { get; set; }
         public string Process(string origin)
         {
-            string result = " ";
+            var args = methodArgs as TrimArgs;
+            var result = origin;
+            if (args.trimChars != null) {
+                foreach (var token in args.trimChars)
+                {
+                    result.Trim(token);
+                }
+            }
             return result;
         }
         public string Description
@@ -236,7 +248,7 @@ namespace WindowsProgramming
             get
             {
                 var args = methodArgs as TrimArgs;
-                var result = $"Trim character(s): ";
+                var result = $"Trim character(s): " + args.trimChars;
                 return result;
             }
         }
@@ -266,15 +278,20 @@ namespace WindowsProgramming
         public IMethodArgs methodArgs { get; set; }
         public string Process(string origin)
         {
-            string result = " ";
+            var args = methodArgs as MoveArgs;
+            var result = origin;
+            if(args.Length > 0 && args.FromPos > 0 && args.ToPos > 0 && args.ToPos < result.Length)
+            {
+                //result[args.FromPos]
+            }
             return result;
         }
         public string Description
         {
             get
             {
-                var args = methodArgs as ReplaceArgs;
-                var result = $"Move to ";
+                var args = methodArgs as MoveArgs;
+                var result = $"Move {args.Length} character(s) from position {args.FromPos} to position {args.ToPos}";
                 return result;
             }
         }
