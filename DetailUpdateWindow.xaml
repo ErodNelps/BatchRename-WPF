@@ -9,9 +9,10 @@
         Title="DetailUpdateWindow" x:Name="UpdateWindow" Height="160" Width="325" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <DataTemplate x:Key="NewCaseDetailTemplate">
-            <StackPanel>
-                <TextBlock Text="New Case" FontSize="16" Margin="5"/>
-            </StackPanel>
+            <Canvas>
+                <TextBlock Text="Choose Case:" FontSize="16" Margin="5"/>
+                <ComboBox Canvas.Left="120" Canvas.Top="6" Width="160"></ComboBox>
+            </Canvas>
         </DataTemplate>
 
         <DataTemplate x:Key="ReplaceDetailTemplate">
