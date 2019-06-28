@@ -17,6 +17,7 @@ namespace WindowsProgramming
         string methodType { get; }
     }
     //New Case Args
+    [Serializable]
     public class NewCaseArgs : IMethodArgs
     {
         public string methodType
@@ -31,6 +32,7 @@ namespace WindowsProgramming
         }
     }
     //Replace Args
+    [Serializable]
     public class ReplaceArgs : IMethodArgs
     {
         public string methodType
@@ -44,6 +46,7 @@ namespace WindowsProgramming
         public string Replacer { get; set; }
     }
     //Trim Args
+    [Serializable]
     public class TrimArgs : IMethodArgs
     {
         public string methodType
@@ -56,6 +59,7 @@ namespace WindowsProgramming
         public string trimChars { get; set; }
     }
     //Remove Args
+    [Serializable]
     public class RemovePatternArgs : IMethodArgs
     {
         public string methodType
@@ -69,6 +73,7 @@ namespace WindowsProgramming
         public string Pattern { get; set; }
     }
     //Move Args
+    [Serializable]
     public class MoveArgs : IMethodArgs
     {
         public string methodType
@@ -83,6 +88,7 @@ namespace WindowsProgramming
         public int ToPos { get; set; }
     }
     //New Name Args
+    [Serializable]
     public class NewNameArgs : IMethodArgs
     {
         public string methodType
@@ -106,6 +112,7 @@ namespace WindowsProgramming
         void ShowUpdateDetailWindow();
     }
 
+    [Serializable]
     public class ReplaceAction : IMethodAction, INotifyPropertyChanged
     {
         public string MethodName { get; set; }
@@ -130,6 +137,7 @@ namespace WindowsProgramming
             }
         }
 
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         void RaiseChangeEvent(string propertyName)
@@ -147,6 +155,8 @@ namespace WindowsProgramming
             }
         }
     }
+
+    [Serializable]
     public class NewCaseAction : IMethodAction, INotifyPropertyChanged
     {
         public string MethodName { get; set; }
@@ -169,6 +179,7 @@ namespace WindowsProgramming
             }
         }
 
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         void RaiseChangeEvent(string propertyName)
@@ -187,6 +198,8 @@ namespace WindowsProgramming
             }
         }
     }
+
+    [Serializable]
     public class RemoveAction : IMethodAction, INotifyPropertyChanged
     {
         public string MethodName { get; set; }
@@ -208,6 +221,7 @@ namespace WindowsProgramming
             }
         }
 
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         void RaiseChangeEvent(string propertyName)
@@ -226,6 +240,8 @@ namespace WindowsProgramming
             }
         }
     }
+
+    [Serializable]
     public class TrimAction : IMethodAction, INotifyPropertyChanged
     {
         public string MethodName { get; set; }
@@ -253,6 +269,7 @@ namespace WindowsProgramming
             }
         }
 
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         void RaiseChangeEvent(string propertyName)
@@ -271,6 +288,8 @@ namespace WindowsProgramming
             }
         }
     }
+
+    [Serializable]
     public class MoveAction : IMethodAction, INotifyPropertyChanged
     {
         public string MethodName { get; set; }
@@ -296,6 +315,7 @@ namespace WindowsProgramming
             }
         }
 
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         void RaiseChangeEvent(string propertyName)
@@ -314,6 +334,8 @@ namespace WindowsProgramming
             }
         }
     }
+
+    [Serializable]
     public class NewNameAction : IMethodAction, INotifyPropertyChanged
     {
         public string MethodName { get; set; }
@@ -335,6 +357,7 @@ namespace WindowsProgramming
             }
         }
 
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         void RaiseChangeEvent(string propertyName)
