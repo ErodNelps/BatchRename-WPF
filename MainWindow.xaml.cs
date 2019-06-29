@@ -578,6 +578,12 @@ namespace WindowProjects
                 if (savedPresetFiles.Count() == 0)
                 {
                     savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = saveLoc, fileExtension = PresetFile.Extension });
+
+                    //Write preset file path to .txt
+                    using (StreamWriter sw = presetsPathFile.AppendText())
+                    {
+                        sw.WriteLine(saveLoc);
+                    }
                 }
                 else
                 {
@@ -593,13 +599,13 @@ namespace WindowProjects
                     if (!isFileExist)
                     {
                         savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = saveLoc, fileExtension = PresetFile.Extension });
-                    }
-                }
 
-                //Write preset file path to .txt
-                using (StreamWriter sw = presetsPathFile.AppendText())
-                {
-                    sw.WriteLine(saveLoc);
+                        //Write preset file path to .txt
+                        using (StreamWriter sw = presetsPathFile.AppendText())
+                        {
+                            sw.WriteLine(saveLoc);
+                        }
+                    }
                 }
             }
         }
