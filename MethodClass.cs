@@ -81,8 +81,9 @@ namespace WindowsProgramming
                 return "Move";
             }
         }
-        public string Target { get; set; }
-        public int NewPosition { get; set; }
+        public int FromPos { get; set; }
+        public int Length { get; set; }
+        public int ToPos { get; set; }
     }
     //New Name Args
     [Serializable]
@@ -285,15 +286,20 @@ namespace WindowsProgramming
         public IMethodArgs methodArgs { get; set; }
         public string Process(string origin)
         {
-            string result = " ";
+            var args = methodArgs as MoveArgs;
+            var result = origin;
+            if (args.Length > 0 && args.FromPos > 0 && args.FromPos < origin.Length && args.ToPos > 0 && args.ToPos < origin.Length )
+            {
+
+            }
             return result;
         }
         public string Description
         {
             get
             {
-                var args = methodArgs as ReplaceArgs;
-                var result = $"Move to ";
+                var args = methodArgs as MoveArgs;
+                var result = $"Move {args.Length} character(s) /nfrom position {args.FromPos} to position {args.ToPos}";
                 return result;
             }
         }

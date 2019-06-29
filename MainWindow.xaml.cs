@@ -217,7 +217,7 @@ namespace WindowProjects
                     methodList.Add(new TrimAction() { methodArgs = new TrimArgs() { initialPos = 0, Length = 0 }, MethodName = methodName, IsChecked = true });                
                     break;
                 case "Move":
-                    methodList.Add(new MoveAction() { methodArgs = new MoveArgs() { Target = " ", NewPosition = 0}, MethodName = methodName, IsChecked = true });                   
+                    methodList.Add(new MoveAction() { methodArgs = new MoveArgs() { FromPos = 0, Length=0, ToPos=0}, MethodName = methodName, IsChecked = true });                   
                     break;
                 case "New Name":
                     methodList.Add(new NewNameAction() { methodArgs = new NewNameArgs() { NewName = "Default"}, MethodName = methodName, IsChecked = true });                    

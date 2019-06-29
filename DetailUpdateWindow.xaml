@@ -31,13 +31,12 @@
 
         <DataTemplate x:Key="MoveDetailTemplate">
             <Canvas>
-                <Label Content="Move:" FontSize="16" Canvas.Left="5" Canvas.Top="5"></Label>
-                <Label Content="To position:" FontSize="16" Canvas.Left="5" Canvas.Top="45" ></Label>
-
-                <StackPanel Canvas.Left="100">
-                    <TextBox Text="{Binding Target}" FontSize="16" Height="40" Width="200" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-                    <TextBox Text="{Binding NewPosition}" FontSize="16" Height="40" Width="200" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-                </StackPanel>
+                <Label Content="Move from:" FontSize="16" Canvas.Left="5" Canvas.Top="5"></Label>
+                <Label Content="Length:" FontSize="16" Canvas.Top="5" Canvas.Left="160"/>
+                <Label Content="Move to:" FontSize="16" Canvas.Left="5" Canvas.Top="45"/>
+                <TextBox Text="{Binding FromPos}" FontSize="16" Height="40" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Canvas.Left="100"/>
+                <TextBox Text="{Binding Length}" FontSize="16" Height="40" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Canvas.Left="230"/>
+                <TextBox Text="{Binding ToPos}" FontSize="16" Height="40" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Canvas.Left="100" Canvas.Top="45"/>
             </Canvas>
         </DataTemplate>
 
