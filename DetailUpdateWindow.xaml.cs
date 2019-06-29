@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WindowsProgramming;
 using System.Diagnostics;
-namespace WindowsProgamming
+namespace WindowsProgramming
 {
     /// <summary>
     /// Interaction logic for DetailUpdateWindow.xaml
@@ -29,6 +29,7 @@ namespace WindowsProgamming
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
+            
             DialogResult = true;
             Close();
         }

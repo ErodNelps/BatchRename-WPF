@@ -62,20 +62,47 @@ namespace WindowProjects
  
         BindingList<FileInformation> selectedFileList = new BindingList<FileInformation>();
         BindingList<FolderInformation> selectedFolderList = new BindingList<FolderInformation>();
-
-        public class FileInformation
+        BindingList<IMethodAction> methodList = new BindingList<IMethodAction>() { };
+        public class FileInformation : INotifyPropertyChanged
         {
             public string filePath { get; set; }
             public string fileName { get; set; }
             public string fileExtension { get; set; }
+            public string newName { get; set; }
+            public string previewName { get; set; }
+            public event PropertyChangedEventHandler PropertyChanged;
 
+            public void UpdateInfo(string originName)
+            {
+                this.filePath.Replace(originName, fileName);
+                RaiseChangeEvent("filePath");
+                RaiseChangeEvent("fileName");
+                RaiseChangeEvent("fileExtension");
+            }
+
+            void RaiseChangeEvent(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
-        public class FolderInformation
+        public class FolderInformation : INotifyPropertyChanged
         {
             public string parent { get; set; }
             public string folderName { get; set; }
             public string newName { get; set; }
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            void RaiseChangeEvent(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            }
+            public void UpdateInfo()
+            {
+                RaiseChangeEvent("folderName");
+                RaiseChangeEvent("parent");
+            }
         }
 
         private void Add_File_Clicked(object sender, RoutedEventArgs e)
@@ -106,7 +133,7 @@ namespace WindowProjects
                     {
                         if (selectedFileList.Count() == 0)
                         {
-                            selectedFileList.Add(new FileInformation() { fileName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
+                            selectedFileList.Add(new FileInformation() { fileName = file.Name, newName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
                         }
                         else
                         {
@@ -196,7 +223,7 @@ namespace WindowProjects
         /// <summary>
         /// Adding method into action list (Add method button event)
         /// </summary>
-        BindingList<IMethodAction> methodList = new BindingList<IMethodAction>() { };
+        
 
         private void MethodMenuItemClicked(object sender, RoutedEventArgs e)
         {
@@ -208,10 +235,10 @@ namespace WindowProjects
                     methodList.Add(new NewCaseAction() { MethodName = methodName, IsChecked = true });
                     break;
                 case "Remove Pattern":
-                    methodList.Add(new RemoveAction() { methodArgs = new RemovePatternArgs() { Pattern = " " }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new RemoveAction() { methodArgs = new RemovePatternArgs() { Pattern = "" }, MethodName = methodName, IsChecked = true });
                     break;
                 case "Replace":
-                    methodList.Add(new ReplaceAction() { methodArgs = new ReplaceArgs() { Target = " ", Replacer = " " }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new ReplaceAction() { methodArgs = new ReplaceArgs() { Target = "", Replacer = "" }, MethodName = methodName, IsChecked = true });
                     break;
                 case "Trim":
                     methodList.Add(new TrimAction() { methodArgs = new TrimArgs() { initialPos = 0, Length = 0 }, MethodName = methodName, IsChecked = true });                
@@ -325,7 +352,9 @@ namespace WindowProjects
                 {
                     selectedFileList[i].fileName = action.Process(selectedFileList[i].fileName);
                 }
-                File.Move(originalPath, selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName));
+                selectedFileList[i].filePath = selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName);
+                File.Move(originalPath, selectedFileList[i].filePath);
+                selectedFileList[i].UpdateInfo(originalName);
             }
         }
 

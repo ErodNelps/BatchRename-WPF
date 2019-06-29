@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using WindowsProgamming;
+using WindowsProgramming;
 
 namespace WindowsProgramming
 {
@@ -30,7 +30,7 @@ namespace WindowsProgramming
     }
     //Replace Args
     [Serializable]
-    public class ReplaceArgs : IMethodArgs
+    public class ReplaceArgs : IMethodArgs, INotifyPropertyChanged
     {
         public string methodType
         {
@@ -39,8 +39,22 @@ namespace WindowsProgramming
                 return "Replace";
             }
         }
-        public string Target { get; set; }
-        public string Replacer { get; set; }
+        private string _target;
+        private string _replacer;
+        public string Target {
+            get { return _target; }
+            set { _target = value; RaiseChangeEvent("Target"); }
+        }
+        public string Replacer{
+            get { return _replacer; }
+            set { _replacer = value; RaiseChangeEvent("Replacer"); }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void RaiseChangeEvent(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
     //Trim Args
     [Serializable]
@@ -290,7 +304,13 @@ namespace WindowsProgramming
             var result = origin;
             if (args.Length > 0 && args.FromPos > 0 && args.FromPos < origin.Length && args.ToPos > 0 && args.ToPos < origin.Length )
             {
-
+                var substring = "";
+                for(int i = args.FromPos-1; i < args.Length; i++)
+                {
+                    substring += result[i];
+                }
+                origin = origin.Insert(args.ToPos-1, substring);
+                result = origin.Remove(args.FromPos - 1, args.Length);
             }
             return result;
         }
@@ -299,7 +319,7 @@ namespace WindowsProgramming
             get
             {
                 var args = methodArgs as MoveArgs;
-                var result = $"Move {args.Length} character(s) /nfrom position {args.FromPos} to position {args.ToPos}";
+                var result = $"Move {args.Length} character(s) \nfrom position {args.FromPos} to position {args.ToPos}";
                 return result;
             }
         }
