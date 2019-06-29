@@ -26,10 +26,7 @@ namespace WindowsProgramming
             {
                 return "NewCase";
             }
-        }
-        public List<string> Style {
-            get { return new List<string>() { "1", "2", "3" }; }
-        }
+        }        
     }
     //Replace Args
     [Serializable]
@@ -56,7 +53,8 @@ namespace WindowsProgramming
                 return "Trim";
             }
         }
-        public string trimChars { get; set; }
+        public int initialPos { get; set; }
+        public int Length { get; set; }
     }
     //Remove Args
     [Serializable]
@@ -83,9 +81,8 @@ namespace WindowsProgramming
                 return "Move";
             }
         }
-        public int FromPos { get; set; }
-        public int Length { get; set; }
-        public int ToPos { get; set; }
+        public string Target { get; set; }
+        public int NewPosition { get; set; }
     }
     //New Name Args
     [Serializable]
@@ -162,19 +159,17 @@ namespace WindowsProgramming
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
         public IMethodArgs methodArgs { get; set; }
-
         public string Process(string origin)
         {
-            var args = methodArgs as NewCaseArgs;
-            var result = "NewCase";
+            string result = " ";
             return result;
         }
         public string Description
         {
             get
             {
-                var args = methodArgs as NewCaseArgs;
-                var result = "Case: ";
+                var args = methodArgs as ReplaceArgs;
+                var result = "NewCase";
                 return result;
             }
         }
@@ -190,7 +185,7 @@ namespace WindowsProgramming
         public void ShowUpdateDetailWindow()
         {
             var window = new DetailUpdateWindow(
-                methodArgs as NewCaseArgs);
+                methodArgs as ReplaceArgs);
 
             if (window.ShowDialog() == true)
             {
@@ -249,14 +244,7 @@ namespace WindowsProgramming
         public IMethodArgs methodArgs { get; set; }
         public string Process(string origin)
         {
-            var args = methodArgs as TrimArgs;
-            var result = origin;
-            if (args.trimChars != null) {
-                foreach (var token in args.trimChars)
-                {
-                    result.Trim(token);
-                }
-            }
+            string result = " ";
             return result;
         }
         public string Description
@@ -264,7 +252,7 @@ namespace WindowsProgramming
             get
             {
                 var args = methodArgs as TrimArgs;
-                var result = $"Trim character(s): " + args.trimChars;
+                var result = $"Trim character(s): ";
                 return result;
             }
         }
@@ -297,20 +285,15 @@ namespace WindowsProgramming
         public IMethodArgs methodArgs { get; set; }
         public string Process(string origin)
         {
-            var args = methodArgs as MoveArgs;
-            var result = origin;
-            if(args.Length > 0 && args.FromPos > 0 && args.ToPos > 0 && args.ToPos < result.Length)
-            {
-                //result[args.FromPos]
-            }
+            string result = " ";
             return result;
         }
         public string Description
         {
             get
             {
-                var args = methodArgs as MoveArgs;
-                var result = $"Move {args.Length} character(s) from position {args.FromPos} to position {args.ToPos}";
+                var args = methodArgs as ReplaceArgs;
+                var result = $"Move to ";
                 return result;
             }
         }

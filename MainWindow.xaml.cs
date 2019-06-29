@@ -35,12 +35,9 @@ namespace WindowProjects
             FolderListBinding.ItemsSource = selectedFolderList;
             //Add Method
             MethodListView.ItemsSource = methodList;
-<<<<<<< HEAD
-            DataContext = this;
-=======
 
             //CREATE A FILE CONTAINS PRESETS
-            FileInfo newFile = new FileInfo("C:\\Users\\Admin\\Desktop\\PresetsFile.txt");
+            FileInfo newFile = new FileInfo("./PresetsFile.txt");
             if (!newFile.Exists)
             {
                 FileStream fs = newFile.Create();
@@ -61,45 +58,24 @@ namespace WindowProjects
             PresetCombobox.ItemsSource = savedPresetFiles;
             PresetCombobox.DisplayMemberPath = "fileName";
             DataContext = this;           
->>>>>>> 220ed445f612a5e40c67fbe10e6f57bdca769fc6
         }
  
         BindingList<FileInformation> selectedFileList = new BindingList<FileInformation>();
         BindingList<FolderInformation> selectedFolderList = new BindingList<FolderInformation>();
 
-        public class FileInformation : INotifyPropertyChanged
+        public class FileInformation
         {
             public string filePath { get; set; }
             public string fileName { get; set; }
             public string fileExtension { get; set; }
-            public string newName { get; set; }
-            public event PropertyChangedEventHandler PropertyChanged;
 
-            public void UpdateData(string originName)
-            {
-                this.filePath.Replace(originName, fileName);
-                RaiseChangeEvent("filePath");
-                RaiseChangeEvent("fileName");
-                RaiseChangeEvent("fileExtension");
-            }
-
-            void RaiseChangeEvent(string propertyName)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
 
-        public class FolderInformation : INotifyPropertyChanged
+        public class FolderInformation
         {
             public string parent { get; set; }
             public string folderName { get; set; }
             public string newName { get; set; }
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            void RaiseChangeEvent(string propertyName)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
 
         private void Add_File_Clicked(object sender, RoutedEventArgs e)
@@ -120,7 +96,7 @@ namespace WindowProjects
                 selectedFilePath = string.Empty;
                 return;
             }
-            
+
             if (multipleSelectedFilePath.Length > 1)
             {
                 for (int i = 0; i < multipleSelectedFilePath.Length; i++)
@@ -130,7 +106,7 @@ namespace WindowProjects
                     {
                         if (selectedFileList.Count() == 0)
                         {
-                            selectedFileList.Add(new FileInformation() { fileName = file.Name, newName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
+                            selectedFileList.Add(new FileInformation() { fileName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
                         }
                         else
                         {
@@ -143,7 +119,7 @@ namespace WindowProjects
                                     goto BREAK;
                                 }
                             }
-                            selectedFileList.Add(new FileInformation() { fileName = file.Name, newName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
+                            selectedFileList.Add(new FileInformation() { fileName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
                         BREAK:;
                         }
                     }
@@ -168,7 +144,7 @@ namespace WindowProjects
                             return;
                         }
                     }
-                    selectedFileList.Add(new FileInformation() { fileName = file.Name, newName = file.Name, filePath = selectedFilePath, fileExtension = file.Extension });
+                    selectedFileList.Add(new FileInformation() { fileName = file.Name, filePath = selectedFilePath, fileExtension = file.Extension });
                 }
                 else
                 {
@@ -229,19 +205,19 @@ namespace WindowProjects
             
             switch (methodName) {
                 case "New Case":
-                    methodList.Add(new NewCaseAction() { methodArgs = new NewCaseArgs() { }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new NewCaseAction() { MethodName = methodName, IsChecked = true });
                     break;
                 case "Remove Pattern":
-                    methodList.Add(new RemoveAction() { methodArgs = new RemovePatternArgs() { Pattern = "" }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new RemoveAction() { methodArgs = new RemovePatternArgs() { Pattern = " " }, MethodName = methodName, IsChecked = true });
                     break;
                 case "Replace":
-                    methodList.Add(new ReplaceAction() { methodArgs = new ReplaceArgs() { Target = "", Replacer = "" }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new ReplaceAction() { methodArgs = new ReplaceArgs() { Target = " ", Replacer = " " }, MethodName = methodName, IsChecked = true });
                     break;
                 case "Trim":
-                    methodList.Add(new TrimAction() { methodArgs = new TrimArgs() { trimChars = ";.,-"}, MethodName = methodName, IsChecked = true });                
+                    methodList.Add(new TrimAction() { methodArgs = new TrimArgs() { initialPos = 0, Length = 0 }, MethodName = methodName, IsChecked = true });                
                     break;
                 case "Move":
-                    methodList.Add(new MoveAction() { methodArgs = new MoveArgs() { FromPos = 0, ToPos = 0, Length = 0 }, MethodName = methodName, IsChecked = true });                   
+                    methodList.Add(new MoveAction() { methodArgs = new MoveArgs() { Target = " ", NewPosition = 0}, MethodName = methodName, IsChecked = true });                   
                     break;
                 case "New Name":
                     methodList.Add(new NewNameAction() { methodArgs = new NewNameArgs() { NewName = "Default"}, MethodName = methodName, IsChecked = true });                    
@@ -349,13 +325,10 @@ namespace WindowProjects
                 {
                     selectedFileList[i].fileName = action.Process(selectedFileList[i].fileName);
                 }
-                selectedFileList[i].filePath = selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName);
-                File.Move(originalPath, selectedFileList[i].filePath);
-                selectedFileList[i].UpdateData(originalName);
+                File.Move(originalPath, selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName));
             }
         }
 
-        
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             methodList.Clear();
@@ -578,7 +551,7 @@ namespace WindowProjects
             }
         }
 
-        FileInfo presetsPathFile = new FileInfo("C:\\Users\\Admin\\Desktop\\PresetsFile.txt");
+        FileInfo presetsPathFile = new FileInfo("./PresetsFile.txt");
         BindingList<FileInformation> savedPresetFiles = new BindingList<FileInformation>();
         
         private void SavePresetButton_Click(object sender, RoutedEventArgs e)
@@ -594,19 +567,40 @@ namespace WindowProjects
             if (saveFileDialog.ShowDialog() == true)
             {
                 saveLoc = saveFileDialog.FileName;
-            }
 
-            //Write methodList to binary file
-            WriteToBinaryFile<BindingList<IMethodAction>>(saveLoc, methodList, false);
+                //Write methodList to binary file
+                WriteToBinaryFile<BindingList<IMethodAction>>(saveLoc, methodList, false);
 
-            //Add file name into List
-            FileInfo PresetFile = new FileInfo(saveLoc);
-            savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = saveLoc, fileExtension = PresetFile.Extension });
+                //Add file name into List
+                FileInfo PresetFile = new FileInfo(saveLoc);
+                bool isFileExist = false;
 
-            //Write preset file path to .txt
-            using (StreamWriter sw = presetsPathFile.AppendText())
-            {
-                sw.WriteLine(saveLoc);
+                if (savedPresetFiles.Count() == 0)
+                {
+                    savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = saveLoc, fileExtension = PresetFile.Extension });
+                }
+                else
+                {
+                    foreach (var item in savedPresetFiles)
+                    {
+                        if (item.fileName.Equals(PresetFile.Name))
+                        {
+                            isFileExist = true;
+                            break;
+                        }
+                    }
+
+                    if (!isFileExist)
+                    {
+                        savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = saveLoc, fileExtension = PresetFile.Extension });
+                    }
+                }
+
+                //Write preset file path to .txt
+                using (StreamWriter sw = presetsPathFile.AppendText())
+                {
+                    sw.WriteLine(saveLoc);
+                }
             }
         }
 
@@ -614,8 +608,17 @@ namespace WindowProjects
         {
             //Load File
             FileInformation loadedPresetFilePath = (FileInformation)PresetCombobox.SelectedItem;
-            methodList = ReadFromBinaryFile<BindingList<IMethodAction>>(loadedPresetFilePath.filePath);
-            methodList.ResetBindings();
+            BindingList<IMethodAction> tempMethodList = new BindingList<IMethodAction>();
+            tempMethodList = ReadFromBinaryFile<BindingList<IMethodAction>>(loadedPresetFilePath.filePath);
+
+            methodList.Clear();
+
+            foreach (var item in tempMethodList)
+            {
+                methodList.Add(item);
+            }
+
+
         }
     }
 }

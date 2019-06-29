@@ -120,21 +120,15 @@
                                     </DockPanel>
                                 </Border>
                                 <Border BorderBrush="Black" BorderThickness="0.5" Height="80" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=DisplayDetailToggleButton}">
-                                    <WrapPanel>
-
-                                        <Canvas x:Name="DisplayDetailStackPanel" Background="White" Height="70">
-                                            <WrapPanel>
-                                                
-                                            <TextBlock Text="{Binding Description}" Margin="5" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow"></TextBlock>
-                                            </WrapPanel>
-                                                <Button Click="UpdateDetail_Clicked" Background="Lavender" Width="50" Height="20" Canvas.Left="172" Canvas.Top="50">
+                                    <Canvas x:Name="DisplayDetailStackPanel" Background="White" Height="70">
+                                        <TextBlock Text="{Binding Description}" Margin="5" HorizontalAlignment="Center"></TextBlock>
+                                        <Button Click="UpdateDetail_Clicked" Background="Lavender" Width="50" Height="20" Canvas.Left="172" Canvas.Top="50">
                                             <StackPanel Orientation="Horizontal">
                                                 <Image Source="images/edit.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"/>
                                                 <TextBlock Text="Edit"></TextBlock>
                                             </StackPanel>
                                         </Button>
                                     </Canvas>
-                                    </WrapPanel>
                                 </Border>
                             </StackPanel>
                         </DataTemplate>
@@ -187,7 +181,7 @@
                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FilePathListBinding}"
                                             Header="Filename" DisplayMemberBinding="{Binding fileName}"/>
                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FilePathListBinding}"
-                                            Header="New Name" DisplayMemberBinding="{Binding newName}"/>
+                                            Header="New Name"/>
                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FilePathListBinding}"
                                             Header="Path" DisplayMemberBinding="{Binding filePath}"/>
                                     <GridViewColumn Width="Auto" Header="Error">
