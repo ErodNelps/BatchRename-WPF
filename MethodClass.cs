@@ -136,7 +136,6 @@ namespace WindowsProgramming
             var args = methodArgs as ReplaceArgs;
             var result = origin.Replace(args.Target, args.Replacer);
             return result;
-
         }
 
         public string Description

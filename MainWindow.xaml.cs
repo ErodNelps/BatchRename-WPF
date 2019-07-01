@@ -54,7 +54,7 @@ namespace WindowProjects
                     savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = PresetFilePath, fileExtension = PresetFile.Extension });
                 }
             }
-
+            
             PresetCombobox.ItemsSource = savedPresetFiles;
             PresetCombobox.DisplayMemberPath = "fileName";
             DataContext = this;           
@@ -344,17 +344,38 @@ namespace WindowProjects
 
         private void Starting_Batch(object sender, RoutedEventArgs e)
         {
-            for(int i=0; i < selectedFileList.Count; i++)
+            if (isExtension)
             {
-                string originalPath = selectedFileList[i].filePath;
-                string originalName = selectedFileList[i].fileName;
-                foreach (var action in methodList)
+                //Extension
+                for (int i = 0; i < selectedFileList.Count; i++)
                 {
-                    selectedFileList[i].fileName = action.Process(selectedFileList[i].fileName);
+                    string originalPath = selectedFileList[i].filePath;
+                    string originalExt = selectedFileList[i].fileExtension;
+                    foreach (var action in methodList)
+                    {
+                        selectedFileList[i].fileExtension = action.Process(selectedFileList[i].fileExtension);
+                    }
+                    selectedFileList[i].filePath = selectedFileList[i].filePath.Replace(originalExt, selectedFileList[i].fileExtension);
+                    selectedFileList[i].fileName = selectedFileList[i].fileName.Replace(originalExt, selectedFileList[i].fileExtension);
+                    File.Move(originalPath, selectedFileList[i].filePath);
+                    selectedFileList[i].UpdateInfo(originalExt);
                 }
-                selectedFileList[i].filePath = selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName);
-                File.Move(originalPath, selectedFileList[i].filePath);
-                selectedFileList[i].UpdateInfo(originalName);
+            }
+            else
+            {
+                //Name
+                for (int i = 0; i < selectedFileList.Count; i++)
+                {
+                    string originalPath = selectedFileList[i].filePath;
+                    string originalName = selectedFileList[i].fileName;
+                    foreach (var action in methodList)
+                    {
+                        selectedFileList[i].fileName = action.Process(selectedFileList[i].fileName);
+                    }
+                    selectedFileList[i].filePath = selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName);
+                    File.Move(originalPath, selectedFileList[i].filePath);
+                    selectedFileList[i].UpdateInfo(originalName);
+                }
             }
         }
 
@@ -570,7 +591,7 @@ namespace WindowProjects
                 binaryFormatter.Serialize(stream, objectToWrite);
             }
         }
-
+        
         public static T ReadFromBinaryFile<T>(string filePath)
         {
             using (Stream stream = File.Open(filePath, FileMode.Open))
@@ -652,7 +673,22 @@ namespace WindowProjects
             {
                 methodList.Add(item);
             }
+        }
 
+        bool isExtension = false;
+
+        private void ApplyToComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox cmb = sender as ComboBox;
+            string applyOption = cmb.SelectedValue.ToString();
+            if (applyOption == "Extension")
+            {
+                isExtension = true;
+            }
+            else
+            {
+                isExtension = false;
+            }
 
         }
     }
