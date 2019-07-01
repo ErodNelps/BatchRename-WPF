@@ -120,14 +120,21 @@
                                     </DockPanel>
                                 </Border>
                                 <Border BorderBrush="Black" BorderThickness="0.5" Height="80" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=DisplayDetailToggleButton}">
-                                    <Canvas x:Name="DisplayDetailStackPanel" Background="White" Height="70">
+                                    <Canvas Background="White" Height="70">
                                         <TextBlock Text="{Binding Description}" Margin="5" HorizontalAlignment="Center"></TextBlock>
-                                        <Button Click="UpdateDetail_Clicked" Background="Lavender" Width="50" Height="20" Canvas.Left="172" Canvas.Top="50">
+                                        <Button Click="UpdateDetail_Clicked" Background="Lavender" Width="50" Height="22" Canvas.Left="172" Canvas.Top="45">
                                             <StackPanel Orientation="Horizontal">
                                                 <Image Source="images/edit.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"/>
                                                 <TextBlock Text="Edit"></TextBlock>
                                             </StackPanel>
                                         </Button>
+                                        <StackPanel x:Name="ApplyToStackPanel" Orientation="Horizontal" Canvas.Left="5" Canvas.Top="45" VerticalAlignment="Center">
+                                            <TextBlock Text="Apply to: " FontWeight="DemiBold" VerticalAlignment="Center"></TextBlock>
+                                            <ComboBox x:Name="ApplyToCombobox" SelectedValuePath="Content" Width="80" SelectionChanged="ApplyToComboBox_SelectionChanged" Margin="5,0,0,0">
+                                                <ComboBoxItem Content="Name" IsSelected="True"></ComboBoxItem>
+                                                <ComboBoxItem Content="Extension"></ComboBoxItem>
+                                            </ComboBox>
+                                        </StackPanel>
                                     </Canvas>
                                 </Border>
                             </StackPanel>
