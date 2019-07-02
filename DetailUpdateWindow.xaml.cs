@@ -23,6 +23,7 @@ namespace WindowsProgramming
         public DetailUpdateWindow(IMethodArgs Args)
         {
             InitializeComponent();
+           
             contentCtrl.DataContext = Args;
             UpdateWindow.Title = Args.methodType;
         }
@@ -32,6 +33,13 @@ namespace WindowsProgramming
             
             DialogResult = true;
             Close();
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selected = (sender as ComboBox)?.SelectedItem;
+            var arg = ((sender as ComboBox)?.DataContext as NewCaseArgs);
+            arg.selectedStyle = selected as string;
         }
     }
 }

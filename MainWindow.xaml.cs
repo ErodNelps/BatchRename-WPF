@@ -233,7 +233,7 @@ namespace WindowProjects
             
             switch (methodName) {
                 case "New Case":
-                    methodList.Add(new NewCaseAction() { MethodName = methodName, IsChecked = true });
+                    methodList.Add(new NewCaseAction() { methodArgs = new NewCaseArgs() { }, MethodName = methodName, IsChecked = true });
                     WireEventHandlers(methodList.Last());
                     break;
                 case "Remove Pattern":

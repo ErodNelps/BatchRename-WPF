@@ -31,7 +31,13 @@ namespace WindowsProgramming
             {
                 return "NewCase";
             }
-        }        
+        }
+        public List<string> style = new List<string>()
+        {
+            "Case1", "Case2", "Case3"
+        };
+        public string selectedStyle { get; set; }
+        public List<String> Style { get => style; }
     }
     //Replace Args
     [Serializable]
@@ -156,6 +162,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
+        [field: NonSerialized]
         public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
@@ -198,14 +205,15 @@ namespace WindowsProgramming
         {
             get
             {
-                var args = methodArgs as ReplaceArgs;
-                var result = "NewCase";
+                var args = methodArgs as NewCaseArgs;
+                var result = args.selectedStyle;
                 return result;
             }
         }
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
+        [field: NonSerialized]
         public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
@@ -215,7 +223,7 @@ namespace WindowsProgramming
         public void ShowUpdateDetailWindow()
         {
             var window = new DetailUpdateWindow(
-                methodArgs as ReplaceArgs);
+                methodArgs as NewCaseArgs);
 
             if (window.ShowDialog() == true)
             {
@@ -248,6 +256,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
+        [field: NonSerialized]
         public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
@@ -289,6 +298,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
+        [field: NonSerialized]
         public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
@@ -341,6 +351,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
+        [field: NonSerialized]
         public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
@@ -383,6 +394,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
+        [field: NonSerialized]
         public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
@@ -401,4 +413,3 @@ namespace WindowsProgramming
         }
     }
 }
-
