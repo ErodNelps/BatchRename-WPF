@@ -75,6 +75,7 @@ namespace WindowProjects
             public void UpdateInfo(string originName)
             {
                 this.filePath.Replace(originName, fileName);
+                RaiseChangeEvent("newName");
                 RaiseChangeEvent("filePath");
                 RaiseChangeEvent("fileName");
                 RaiseChangeEvent("fileExtension");
@@ -146,7 +147,7 @@ namespace WindowProjects
                                     goto BREAK;
                                 }
                             }
-                            selectedFileList.Add(new FileInformation() { fileName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
+                            selectedFileList.Add(new FileInformation() { fileName = file.Name,newName=file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
                         BREAK:;
                         }
                     }
@@ -171,7 +172,7 @@ namespace WindowProjects
                             return;
                         }
                     }
-                    selectedFileList.Add(new FileInformation() { fileName = file.Name, filePath = selectedFilePath, fileExtension = file.Extension });
+                    selectedFileList.Add(new FileInformation() { fileName = file.Name,newName=file.Name, filePath = selectedFilePath, fileExtension = file.Extension });
                 }
                 else
                 {
@@ -233,21 +234,27 @@ namespace WindowProjects
             switch (methodName) {
                 case "New Case":
                     methodList.Add(new NewCaseAction() { MethodName = methodName, IsChecked = true });
+                    WireEventHandlers(methodList.Last());
                     break;
                 case "Remove Pattern":
                     methodList.Add(new RemoveAction() { methodArgs = new RemovePatternArgs() { Pattern = "" }, MethodName = methodName, IsChecked = true });
+                    WireEventHandlers(methodList.Last());
                     break;
                 case "Replace":
                     methodList.Add(new ReplaceAction() { methodArgs = new ReplaceArgs() { Target = "", Replacer = "" }, MethodName = methodName, IsChecked = true });
+                    WireEventHandlers(methodList.Last());
                     break;
                 case "Trim":
-                    methodList.Add(new TrimAction() { methodArgs = new TrimArgs() { initialPos = 0, Length = 0 }, MethodName = methodName, IsChecked = true });                
+                    methodList.Add(new TrimAction() { methodArgs = new TrimArgs() { initialPos = 0, Length = 0 }, MethodName = methodName, IsChecked = true });
+                    WireEventHandlers(methodList.Last());
                     break;
                 case "Move":
-                    methodList.Add(new MoveAction() { methodArgs = new MoveArgs() { FromPos = 0, Length=0, ToPos=0}, MethodName = methodName, IsChecked = true });                   
+                    methodList.Add(new MoveAction() { methodArgs = new MoveArgs() { FromPos = 0, Length = 0, ToPos = 0 }, MethodName = methodName, IsChecked = true });
+                    WireEventHandlers(methodList.Last());
                     break;
                 case "New Name":
-                    methodList.Add(new NewNameAction() { methodArgs = new NewNameArgs() { NewName = "Default"}, MethodName = methodName, IsChecked = true });                    
+                    methodList.Add(new NewNameAction() { methodArgs = new NewNameArgs() { NewName = "Default" }, MethodName = methodName, IsChecked = true });
+                    WireEventHandlers(methodList.Last());
                     break;
                 default:
                     break;
@@ -341,7 +348,29 @@ namespace WindowProjects
             var item = MethodListView.SelectedItem as IMethodAction;
             item.ShowUpdateDetailWindow();
         }
-
+        private void WireEventHandlers(IMethodAction action)
+        {
+            MyEventHandler handler = new MyEventHandler(OnHandler1);
+            action.Event1 += handler;
+        }
+        public void OnHandler1(object sender, MyEvent e)
+        {
+            OnBindingListChange();
+        }
+        public void OnBindingListChange()
+        {
+            for (int i = 0; i < selectedFileList.Count; i++)
+            {
+                string originalPath = selectedFileList[i].filePath;
+                string originalName = selectedFileList[i].fileName;
+                foreach (var action in methodList)
+                {
+                    selectedFileList[i].newName = action.Process(selectedFileList[i].fileName);
+                }
+                //selectedFileList[i].filePath = selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName);
+                selectedFileList[i].UpdateInfo(originalName);
+            }
+        }
         private void Starting_Batch(object sender, RoutedEventArgs e)
         {
             if (isExtension)

@@ -11,6 +11,11 @@ using WindowsProgramming;
 
 namespace WindowsProgramming
 {
+    public delegate void MyEventHandler(object sender, MyEvent e);
+    public class MyEvent : EventArgs
+    {
+        public string message;
+    }
     //Method arguments interface
     public interface IMethodArgs
     {
@@ -116,6 +121,7 @@ namespace WindowsProgramming
     //Method action interface
     public interface IMethodAction
     {
+        event MyEventHandler Event1;
         string MethodName { get; set; }
         bool IsChecked { get; set; }
         IMethodArgs methodArgs { get; set; }
@@ -150,7 +156,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -162,6 +168,16 @@ namespace WindowsProgramming
 
             if (window.ShowDialog() == true)
             {
+                string message = " Updated";
+                MyEvent e1 = new MyEvent();
+                e1.message = message;
+                var args = methodArgs as ReplaceArgs;
+                if (Event1 != null)
+                {
+                    Event1(args, e1);
+                }
+
+                e1 = null;
                 RaiseChangeEvent("Description");
             }
         }
@@ -190,7 +206,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -232,7 +248,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -273,7 +289,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -325,7 +341,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -367,7 +383,7 @@ namespace WindowsProgramming
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public event MyEventHandler Event1;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -175,7 +175,7 @@
                                 </ToolBar>
                             </ToolBarTray>
                         </StackPanel>
-                        <ListView x:Name="FilePathListBinding" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListView x:Name="FilePathListBinding" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,18,0,-18">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
                                     <Setter Property="Height" Value="{Binding ActualHeight, Converter={StaticResource heightConverter}, ElementName=FilePathListBinding}" />
@@ -188,7 +188,7 @@
                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FilePathListBinding}"
                                             Header="Filename" DisplayMemberBinding="{Binding fileName}"/>
                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FilePathListBinding}"
-                                            Header="New Name"/>
+                                            Header="New Name" DisplayMemberBinding="{Binding newName}"/>
                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FilePathListBinding}"
                                             Header="Path" DisplayMemberBinding="{Binding filePath}"/>
                                     <GridViewColumn Width="Auto" Header="Error">
