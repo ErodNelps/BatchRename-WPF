@@ -20,6 +20,8 @@ using System.Runtime.CompilerServices;
 using WindowsProgramming;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using System.Globalization;
+using System.Threading;
 
 namespace WindowProjects
 {
@@ -70,6 +72,19 @@ namespace WindowProjects
             public string fileName { get; set; }
             public string fileExtension { get; set; }
             public string newName { get; set; }
+            private bool _extraCheckbox = false;
+            public bool ExtraCheckbox
+            {
+                get
+                {
+                    return this._extraCheckbox;
+                }
+                set
+                {
+                    this._extraCheckbox = value;
+                }
+            }
+
             public event PropertyChangedEventHandler PropertyChanged;
 
             public void UpdateInfo(string originName)
@@ -260,6 +275,14 @@ namespace WindowProjects
                     methodList.Add(new NewNameAction() { methodArgs = new NewNameArgs() { NewName = "Default" }, MethodName = methodName, IsChecked = true });
                     WireEventHandlers(methodList.Last());
                     break;
+                case "Fullname Normalize":
+                    methodList.Add(new FullnameNormalizeAction() { methodArgs = new FullnameNormalizeArgs() { }, MethodName = methodName, IsChecked = true });
+                    WireEventHandlers(methodList.Last());
+                    break;
+                case "Unique ID":
+                    methodList.Add(new UniqueIDAction() { methodArgs = new UniqueIDArgs() { }, MethodName = methodName, IsChecked = true });
+                    WireEventHandlers(methodList.Last());
+                    break;
                 default:
                     break;
             }
@@ -296,63 +319,7 @@ namespace WindowProjects
         {
             var selectedMethod = MethodListView.SelectedItem as ReplaceAction;
             selectedMethod.IsChecked = true;
-        }     
-        //METHODS
-        
-        private static int FindFirstAlphabetChar(string str)
-        {
-            if (str == null)
-                return -1;
-
-            for (var i = 0; i < str.Length; i += 1)
-            {
-                if ((str.ElementAt(i) >= 'A' && str.ElementAt(i) <= 'Z') || (str.ElementAt(i) >= 'a' && str.ElementAt(i) <= 'z'))
-                {
-                    return i;
-                }
-            }
-            return -1;
         }
-
-        private static string FirstLetterToUpper(string str)
-        {
-            if (str == null)
-                return null;
-
-            int indexOfFirstChar = FindFirstAlphabetChar(str);
-            if (indexOfFirstChar == -1)
-                return str;
-
-            if (str.Length > 1)
-            {
-                return (str.Substring(0, indexOfFirstChar) + char.ToUpper(str[indexOfFirstChar]) + str.Substring(indexOfFirstChar + 1));
-            }
-
-            return str.ToUpper();
-        }
-
-        private static string FullNameNormalize(string source)
-        {
-            if (source == null)
-                return null;
-
-            //Remove extra space
-            source = String.Join(" ", source.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries));
-            source = FirstLetterToUpper(source);
-
-            return source;
-        }
-
-        private static string UniqueName(string source)
-        {
-            if (source == null)
-                return null;
-
-            string guid = Guid.NewGuid().ToString();
-
-            return guid;
-        }
-
         private void UpdateDetail_Clicked(object sender, RoutedEventArgs e)
         {
             var item = MethodListView.SelectedItem as IMethodAction;
@@ -384,18 +351,6 @@ namespace WindowProjects
             }
         }
         public void OnMethodListChanged()
-        { 
-            for (int i = 0; i < selectedFileList.Count; i++)
-            {
-                string originalName = selectedFileList[i].fileName;
-                foreach (var action in methodList)
-                {
-                    selectedFileList[i].newName = action.Process(selectedFileList[i].newName);
-                }
-                selectedFileList[i].UpdateInfo(originalName);
-            }
-        }
-        private void Starting_Batch(object sender, RoutedEventArgs e)
         {
             if (isExtension)
             {
@@ -403,14 +358,14 @@ namespace WindowProjects
                 for (int i = 0; i < selectedFileList.Count; i++)
                 {
                     string originalPath = selectedFileList[i].filePath;
+                    string originalName = selectedFileList[i].fileName;
                     string originalExt = selectedFileList[i].fileExtension;
                     foreach (var action in methodList)
                     {
                         selectedFileList[i].fileExtension = action.Process(selectedFileList[i].fileExtension);
                     }
-                    selectedFileList[i].filePath = selectedFileList[i].filePath.Replace(originalExt, selectedFileList[i].fileExtension);
-                    selectedFileList[i].fileName = selectedFileList[i].fileName.Replace(originalExt, selectedFileList[i].fileExtension);
-                    File.Move(originalPath, selectedFileList[i].filePath);
+                    
+                    selectedFileList[i].newName = selectedFileList[i].newName.Replace(originalExt, selectedFileList[i].fileExtension);
                     selectedFileList[i].UpdateInfo(originalExt);
                 }
             }
@@ -423,13 +378,15 @@ namespace WindowProjects
                     string originalName = selectedFileList[i].fileName;
                     foreach (var action in methodList)
                     {
-                        selectedFileList[i].fileName = selectedFileList[i].newName;
+                        selectedFileList[i].fileName = action.Process(selectedFileList[i].newName);
                     }
-                    selectedFileList[i].filePath = selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName);
-                    File.Move(originalPath, selectedFileList[i].filePath);
                     selectedFileList[i].UpdateInfo(originalName);
                 }
             }
+        }
+        private void Starting_Batch(object sender, RoutedEventArgs e)
+        {
+           
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)

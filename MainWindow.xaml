@@ -49,6 +49,8 @@
                             <MenuItem Header="Trim" Click="MethodMenuItemClicked" />
                             <MenuItem Header="Move" Click="MethodMenuItemClicked" />
                             <MenuItem Header="New Name" Click="MethodMenuItemClicked" />
+                            <MenuItem Header="Fullname Normalize" Click="MethodMenuItemClicked" />
+                            <MenuItem Header="Unique ID" Click="MethodMenuItemClicked" />
                         </MenuItem>
                     </Menu>
                     <Separator/>
@@ -146,7 +148,6 @@
         <Grid>
             <TabControl DockPanel.Dock="Right">
                 <TabItem Header="Rename Files">
-
                     <DockPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                             <ToolBarTray>
@@ -247,7 +248,7 @@
                                             Header="New Name" DisplayMemberBinding="{Binding newName}"/>
                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FolderListBinding}"
                                             Header="Parent path" DisplayMemberBinding="{Binding parent}"/>
-                                    <GridViewColumn Width="Auto" Header="Error">
+                                    <GridViewColumn Width="Auto" Header="Error" DisplayMemberBinding="{Binding ExtraCheckbox}">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Label Content="None" Foreground="Red"/>
