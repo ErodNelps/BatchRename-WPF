@@ -11,10 +11,9 @@ using WindowsProgramming;
 
 namespace WindowsProgramming
 {
-    public delegate void MyEventHandler(object sender, MyEvent e);
-    public class MyEvent : EventArgs
+    public delegate void UpdateEventHandler(object sender, UpdateEvent e);
+    public class UpdateEvent : EventArgs
     {
-        public string message;
     }
     //Method arguments interface
     public interface IMethodArgs
@@ -127,7 +126,7 @@ namespace WindowsProgramming
     //Method action interface
     public interface IMethodAction
     {
-        event MyEventHandler Event1;
+        event UpdateEventHandler newNameEvent;
         string MethodName { get; set; }
         bool IsChecked { get; set; }
         IMethodArgs methodArgs { get; set; }
@@ -146,7 +145,12 @@ namespace WindowsProgramming
         public string Process(string origin)
         {
             var args = methodArgs as ReplaceArgs;
-            var result = origin.Replace(args.Target, args.Replacer);
+            var result = origin;
+            if (args.Target =="" && args.Replacer =="")
+            {
+                return result;
+            }
+            result = origin.Replace(args.Target, args.Replacer);
             return result;
         }
 
@@ -163,7 +167,7 @@ namespace WindowsProgramming
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         [field: NonSerialized]
-        public event MyEventHandler Event1;
+        public event UpdateEventHandler newNameEvent;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -175,17 +179,14 @@ namespace WindowsProgramming
 
             if (window.ShowDialog() == true)
             {
-                string message = " Updated";
-                MyEvent e1 = new MyEvent();
-                e1.message = message;
-                var args = methodArgs as ReplaceArgs;
-                if (Event1 != null)
-                {
-                    Event1(args, e1);
-                }
-
-                e1 = null;
                 RaiseChangeEvent("Description");
+                UpdateEvent e1 = new UpdateEvent();
+                var args = methodArgs as ReplaceArgs;
+                if (newNameEvent != null)
+                {
+                    newNameEvent(args, e1);
+                }
+                e1 = null;             
             }
         }
     }
@@ -214,7 +215,7 @@ namespace WindowsProgramming
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         [field: NonSerialized]
-        public event MyEventHandler Event1;
+        public event UpdateEventHandler newNameEvent;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -257,7 +258,7 @@ namespace WindowsProgramming
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         [field: NonSerialized]
-        public event MyEventHandler Event1;
+        public event UpdateEventHandler newNameEvent;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -299,7 +300,7 @@ namespace WindowsProgramming
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         [field: NonSerialized]
-        public event MyEventHandler Event1;
+        public event UpdateEventHandler newNameEvent;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -352,7 +353,7 @@ namespace WindowsProgramming
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         [field: NonSerialized]
-        public event MyEventHandler Event1;
+        public event UpdateEventHandler newNameEvent;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -395,7 +396,7 @@ namespace WindowsProgramming
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         [field: NonSerialized]
-        public event MyEventHandler Event1;
+        public event UpdateEventHandler newNameEvent;
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

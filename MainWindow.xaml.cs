@@ -57,6 +57,7 @@ namespace WindowProjects
             
             PresetCombobox.ItemsSource = savedPresetFiles;
             PresetCombobox.DisplayMemberPath = "fileName";
+
             DataContext = this;           
         }
  
@@ -69,7 +70,6 @@ namespace WindowProjects
             public string fileName { get; set; }
             public string fileExtension { get; set; }
             public string newName { get; set; }
-            public string previewName { get; set; }
             public event PropertyChangedEventHandler PropertyChanged;
 
             public void UpdateInfo(string originName)
@@ -135,6 +135,7 @@ namespace WindowProjects
                         if (selectedFileList.Count() == 0)
                         {
                             selectedFileList.Add(new FileInformation() { fileName = file.Name, newName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
+                            OnFileListChange();
                         }
                         else
                         {
@@ -148,6 +149,8 @@ namespace WindowProjects
                                 }
                             }
                             selectedFileList.Add(new FileInformation() { fileName = file.Name,newName=file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
+                            OnFileListChange();
+
                         BREAK:;
                         }
                     }
@@ -172,7 +175,8 @@ namespace WindowProjects
                             return;
                         }
                     }
-                    selectedFileList.Add(new FileInformation() { fileName = file.Name,newName=file.Name, filePath = selectedFilePath, fileExtension = file.Extension });
+                    selectedFileList.Add(new FileInformation() { fileName = file.Name, newName=file.Name, filePath = selectedFilePath, fileExtension = file.Extension });
+                    OnFileListChange();
                 }
                 else
                 {
@@ -275,8 +279,16 @@ namespace WindowProjects
                     break;
                 }
             }
-
             methodList.Remove(selectedMethod);
+            foreach (var item in selectedFileList as BindingList<FileInformation>)
+            {
+                item.newName = item.fileName;
+                item.UpdateInfo(item.fileName);
+            }
+            for(int i=0; i <selectedFileList.Count; i++)
+            {
+                OnMethodListChanged();
+            }
         }
 
         //CheckBox class Method
@@ -284,9 +296,7 @@ namespace WindowProjects
         {
             var selectedMethod = MethodListView.SelectedItem as ReplaceAction;
             selectedMethod.IsChecked = true;
-        }
-
-        
+        }     
         //METHODS
         
         private static int FindFirstAlphabetChar(string str)
@@ -350,24 +360,38 @@ namespace WindowProjects
         }
         private void WireEventHandlers(IMethodAction action)
         {
-            MyEventHandler handler = new MyEventHandler(OnHandler1);
-            action.Event1 += handler;
+            UpdateEventHandler handler = new UpdateEventHandler(OnHandler1);
+            action.newNameEvent += handler;
         }
-        public void OnHandler1(object sender, MyEvent e)
+        public void OnHandler1(object sender, UpdateEvent e)
         {
-            OnBindingListChange();
+            OnMethodListChanged();
         }
-        public void OnBindingListChange()
+        public void OnFileListChange()
         {
+            if (methodList.Count == 0)
+            {
+                return;
+            }
             for (int i = 0; i < selectedFileList.Count; i++)
             {
-                string originalPath = selectedFileList[i].filePath;
                 string originalName = selectedFileList[i].fileName;
                 foreach (var action in methodList)
                 {
-                    selectedFileList[i].newName = action.Process(selectedFileList[i].fileName);
+                    selectedFileList[i].newName = action.Process(selectedFileList[i].newName);
                 }
-                //selectedFileList[i].filePath = selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName);
+                selectedFileList[i].UpdateInfo(originalName);
+            }
+        }
+        public void OnMethodListChanged()
+        { 
+            for (int i = 0; i < selectedFileList.Count; i++)
+            {
+                string originalName = selectedFileList[i].fileName;
+                foreach (var action in methodList)
+                {
+                    selectedFileList[i].newName = action.Process(selectedFileList[i].newName);
+                }
                 selectedFileList[i].UpdateInfo(originalName);
             }
         }
@@ -399,7 +423,7 @@ namespace WindowProjects
                     string originalName = selectedFileList[i].fileName;
                     foreach (var action in methodList)
                     {
-                        selectedFileList[i].fileName = action.Process(selectedFileList[i].fileName);
+                        selectedFileList[i].fileName = selectedFileList[i].newName;
                     }
                     selectedFileList[i].filePath = selectedFileList[i].filePath.Replace(originalName, selectedFileList[i].fileName);
                     File.Move(originalPath, selectedFileList[i].filePath);
