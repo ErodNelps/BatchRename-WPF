@@ -35,7 +35,7 @@ namespace WindowsProgramming
         }
         public List<string> style = new List<string>()
         {
-            "Case1", "Case2", "Case3"
+            "Upper Case", "Lower Case", "Title Case"
         };
         public string selectedStyle { get; set; }
         public List<String> Style { get => style; }
@@ -226,6 +226,24 @@ namespace WindowsProgramming
         public string Process(string origin)
         {
             string result = " ";
+            var selected = (methodArgs as NewCaseArgs).selectedStyle;
+            
+            switch(selected)
+            {
+                case "Upper Case":
+                    result = origin.ToUpper();
+                    break;
+
+                case "Lower Case":
+                    result = origin.ToLower();
+                    break;
+
+                case "Title Case":
+                    CultureInfo culture_info = Thread.CurrentThread.CurrentCulture;
+                    TextInfo text_info = culture_info.TextInfo;
+                    result = text_info.ToTitleCase(origin);
+                    break;
+            }
             return result;
         }
         public string Description
