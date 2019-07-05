@@ -72,6 +72,7 @@ namespace WindowProjects
             public string fileName { get; set; }
             public string fileExtension { get; set; }
             public string newName { get; set; }
+            public string fileError { get; set; }
             private bool _extraCheckbox = false;
             public bool ExtraCheckbox
             {
@@ -291,26 +292,36 @@ namespace WindowProjects
 
         private void RemoveMethodlButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedMethod = MethodListView.SelectedItem as IMethodAction;
-
-            for (int i = 0; i < AddMethodMenuItem.Items.Count; i++)
+            try
             {
-                MenuItem selectedItem = (MenuItem)AddMethodMenuItem.Items[i];
-                if (selectedItem.Header.ToString() == selectedMethod.MethodName)
+                var selectedMethod = MethodListView.SelectedItem as IMethodAction;
+
+                for (int i = 0; i < AddMethodMenuItem.Items.Count; i++)
                 {
-                    selectedItem.IsChecked = false;
-                    break;
+                    MenuItem selectedItem = (MenuItem)AddMethodMenuItem.Items[i];
+                    if (selectedItem.Header.ToString() == selectedMethod.MethodName)
+                    {
+                        selectedItem.IsChecked = false;
+                        break;
+                    }
+                }
+                methodList.Remove(selectedMethod);
+                foreach (var item in selectedFileList as BindingList<FileInformation>)
+                {
+                    item.newName = item.fileName;
+                    item.UpdateInfo(item.fileName);
+                }
+                for (int i = 0; i < selectedFileList.Count; i++)
+                {
+                    OnMethodListChanged();
                 }
             }
-            methodList.Remove(selectedMethod);
-            foreach (var item in selectedFileList as BindingList<FileInformation>)
+            catch (Exception ex)
             {
-                item.newName = item.fileName;
-                item.UpdateInfo(item.fileName);
-            }
-            for(int i=0; i <selectedFileList.Count; i++)
-            {
-                OnMethodListChanged();
+                for (int i = 0; i < selectedFileList.Count; i++)
+                {
+                    selectedFileList[i].fileError = ex.ToString();
+                }
             }
         }
 
@@ -336,51 +347,71 @@ namespace WindowProjects
         }
         public void OnFileListChange()
         {
-            if (methodList.Count == 0)
+            try
             {
-                return;
-            }
-            for (int i = 0; i < selectedFileList.Count; i++)
-            {
-                string originalName = selectedFileList[i].fileName;
-                foreach (var action in methodList)
+                if (methodList.Count == 0)
                 {
-                    selectedFileList[i].newName = action.Process(selectedFileList[i].newName);
+                    return;
                 }
-                selectedFileList[i].UpdateInfo(originalName);
+                for (int i = 0; i < selectedFileList.Count; i++)
+                {
+                    string originalName = selectedFileList[i].fileName;
+                    foreach (var action in methodList)
+                    {
+                        selectedFileList[i].newName = action.Process(selectedFileList[i].newName);
+                    }
+                    selectedFileList[i].UpdateInfo(originalName);
+                }
+            }
+            catch (Exception ex)
+            {
+                for (int i = 0; i < selectedFileList.Count; i++)
+                {
+                    selectedFileList[i].fileError = ex.ToString();
+                }
             }
         }
         public void OnMethodListChanged()
         {
-            if (isExtension)
+            try
             {
-                //Extension
-                for (int i = 0; i < selectedFileList.Count; i++)
+                if (isExtension)
                 {
-                    string originalPath = selectedFileList[i].filePath;
-                    string originalName = selectedFileList[i].fileName;
-                    string originalExt = selectedFileList[i].fileExtension;
-                    foreach (var action in methodList)
+                    //Extension
+                    for (int i = 0; i < selectedFileList.Count; i++)
                     {
-                        selectedFileList[i].fileExtension = action.Process(selectedFileList[i].fileExtension);
+                        string originalPath = selectedFileList[i].filePath;
+                        string originalName = selectedFileList[i].fileName;
+                        string originalExt = selectedFileList[i].fileExtension;
+                        foreach (var action in methodList)
+                        {
+                            selectedFileList[i].fileExtension = action.Process(selectedFileList[i].fileExtension);
+                        }
+
+                        selectedFileList[i].newName = selectedFileList[i].newName.Replace(originalExt, selectedFileList[i].fileExtension);
+                        selectedFileList[i].UpdateInfo(originalExt);
                     }
-                    
-                    selectedFileList[i].newName = selectedFileList[i].newName.Replace(originalExt, selectedFileList[i].fileExtension);
-                    selectedFileList[i].UpdateInfo(originalExt);
+                }
+                else
+                {
+                    //Name
+                    for (int i = 0; i < selectedFileList.Count; i++)
+                    {
+                        string originalPath = selectedFileList[i].filePath;
+                        string originalName = selectedFileList[i].fileName;
+                        foreach (var action in methodList)
+                        {
+                            selectedFileList[i].newName = action.Process(selectedFileList[i].newName);
+                        }
+                        selectedFileList[i].UpdateInfo(originalName);
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                //Name
                 for (int i = 0; i < selectedFileList.Count; i++)
                 {
-                    string originalPath = selectedFileList[i].filePath;
-                    string originalName = selectedFileList[i].fileName;
-                    foreach (var action in methodList)
-                    {
-                        selectedFileList[i].fileName = action.Process(selectedFileList[i].newName);
-                    }
-                    selectedFileList[i].UpdateInfo(originalName);
+                    selectedFileList[i].fileError = ex.ToString();
                 }
             }
         }

@@ -192,7 +192,8 @@
                                             Header="New Name" DisplayMemberBinding="{Binding newName}"/>
                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FilePathListBinding}"
                                             Header="Path" DisplayMemberBinding="{Binding filePath}"/>
-                                    <GridViewColumn Width="Auto" Header="Error">
+                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FilePathListBinding}"
+                                            Header="Error" DisplayMemberBinding="{Binding fileError}">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Label Content="None" Foreground="Red"/>
