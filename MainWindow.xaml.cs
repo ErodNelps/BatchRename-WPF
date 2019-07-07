@@ -53,16 +53,16 @@ namespace WindowProjects
                 while ((PresetFilePath = sr.ReadLine()) != null)
                 {
                     FileInfo PresetFile = new FileInfo(PresetFilePath);
-                    savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = PresetFilePath, fileExtension = PresetFile.Extension });
+                    savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = PresetFilePath, originalExtension = PresetFile.Extension });
                 }
             }
-            
+
             PresetCombobox.ItemsSource = savedPresetFiles;
             PresetCombobox.DisplayMemberPath = "fileName";
 
-            DataContext = this;           
+            DataContext = this;
         }
- 
+        
         BindingList<FileInformation> selectedFileList = new BindingList<FileInformation>();
         BindingList<FolderInformation> selectedFolderList = new BindingList<FolderInformation>();
         BindingList<IMethodAction> methodList = new BindingList<IMethodAction>() { };
@@ -70,32 +70,26 @@ namespace WindowProjects
         {
             public string filePath { get; set; }
             public string fileName { get; set; }
-            public string fileExtension { get; set; }
+            //Name without extension
+            public string realName { get; set; }
+            public string originalExtension { get; set; }
+            public string newExt { get; set; }
             public string newName { get; set; }
             public string fileError { get; set; }
-            private bool _extraCheckbox = false;
-            public bool ExtraCheckbox
-            {
-                get
-                {
-                    return this._extraCheckbox;
-                }
-                set
-                {
-                    this._extraCheckbox = value;
-                }
-            }
-
             public event PropertyChangedEventHandler PropertyChanged;
 
-            public void UpdateInfo(string originName)
+            public void UpdatePreview()
             {
-                this.filePath.Replace(originName, fileName);
                 RaiseChangeEvent("newName");
-                RaiseChangeEvent("filePath");
-                RaiseChangeEvent("fileName");
-                RaiseChangeEvent("fileExtension");
+                RaiseChangeEvent("newExt");
             }
+            //public void UpdatePreview(string originName)
+            //{
+            //    this.filePath.Replace(originName, fileName);
+            //    RaiseChangeEvent("filePath");
+            //    RaiseChangeEvent("fileName");
+            //    RaiseChangeEvent("fileExtension");
+            //}
 
             void RaiseChangeEvent(string propertyName)
             {
@@ -105,9 +99,10 @@ namespace WindowProjects
 
         public class FolderInformation : INotifyPropertyChanged
         {
-            public string parent { get; set; }
+            public string folderPath { get; set; }
             public string folderName { get; set; }
             public string newName { get; set; }
+            public string folderError { get; set; }
             public event PropertyChangedEventHandler PropertyChanged;
 
             void RaiseChangeEvent(string propertyName)
@@ -115,10 +110,9 @@ namespace WindowProjects
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
             }
-            public void UpdateInfo()
+            public void UpdatePreview()
             {
-                RaiseChangeEvent("folderName");
-                RaiseChangeEvent("parent");
+                RaiseChangeEvent("newName");
             }
         }
 
@@ -150,7 +144,7 @@ namespace WindowProjects
                     {
                         if (selectedFileList.Count() == 0)
                         {
-                            selectedFileList.Add(new FileInformation() { fileName = file.Name, newName = file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
+                            selectedFileList.Add(new FileInformation() { fileName = file.Name, newName = file.Name, realName = file.Name.Replace(file.Extension.Length == 0 ? " " : file.Extension, ""), filePath = multipleSelectedFilePath[i], originalExtension = file.Extension, newExt = file.Extension, fileError = "OK" });
                             OnFileListChange();
                         }
                         else
@@ -164,9 +158,8 @@ namespace WindowProjects
                                     goto BREAK;
                                 }
                             }
-                            selectedFileList.Add(new FileInformation() { fileName = file.Name,newName=file.Name, filePath = multipleSelectedFilePath[i], fileExtension = file.Extension });
+                            selectedFileList.Add(new FileInformation() { fileName = file.Name, newName = file.Name, realName = file.Name.Replace(file.Extension.Length==0? " ": file.Extension, ""), filePath = multipleSelectedFilePath[i], originalExtension = file.Extension, newExt = file.Extension, fileError = "OK" });
                             OnFileListChange();
-
                         BREAK:;
                         }
                     }
@@ -191,7 +184,7 @@ namespace WindowProjects
                             return;
                         }
                     }
-                    selectedFileList.Add(new FileInformation() { fileName = file.Name, newName=file.Name, filePath = selectedFilePath, fileExtension = file.Extension });
+                    selectedFileList.Add(new FileInformation() { fileName = file.Name, newName = file.Name, realName = file.Name.Replace(file.Extension.Length == 0 ? " ": file.Extension, ""), filePath = selectedFilePath, originalExtension = file.Extension, newExt = file.Extension, fileError = "OK" });
                     OnFileListChange();
                 }
                 else
@@ -202,7 +195,7 @@ namespace WindowProjects
             }
         }
 
-        string previousSelectedFolder = " ";
+        string previousSelectedFolder = "";
         private void Add_Folder_Clicked(object sender, RoutedEventArgs e)
         {
             Winforms.FolderBrowserDialog folderBrowser = new Winforms.FolderBrowserDialog();
@@ -232,8 +225,9 @@ namespace WindowProjects
                 DirectoryInfo[] subDirectories = selectedDirectory.GetDirectories();
                 foreach (object subDir in subDirectories)
                 {
-                    selectedFolderList.Add(new FolderInformation() { folderName = subDir.ToString(), parent = selectedDirPath, newName = "" });
+                    selectedFolderList.Add(new FolderInformation() { folderName = subDir.ToString(), folderPath = selectedDirPath + subDir.ToString(), newName = subDir.ToString(), folderError = "OK" });
                 }
+                OnFolderListChange();
             }
             else
             {
@@ -244,83 +238,87 @@ namespace WindowProjects
         /// <summary>
         /// Adding method into action list (Add method button event)
         /// </summary>
-        
+
 
         private void MethodMenuItemClicked(object sender, RoutedEventArgs e)
         {
             MenuItem item = sender as MenuItem;
             string methodName = item.Header.ToString();
-            
+
             switch (methodName) {
                 case "New Case":
-                    methodList.Add(new NewCaseAction() { methodArgs = new NewCaseArgs() { }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new NewCaseAction() { methodArgs = new NewCaseArgs() { }, isApplyToName = true, MethodName = methodName, IsChecked = true });
                     WireEventHandlers(methodList.Last());
                     break;
                 case "Remove Pattern":
-                    methodList.Add(new RemoveAction() { methodArgs = new RemovePatternArgs() { Pattern = "" }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new RemoveAction() { methodArgs = new RemovePatternArgs() { Pattern = "" }, isApplyToName = true, MethodName = methodName, IsChecked = true });
                     WireEventHandlers(methodList.Last());
                     break;
                 case "Replace":
-                    methodList.Add(new ReplaceAction() { methodArgs = new ReplaceArgs() { Target = "", Replacer = "" }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new ReplaceAction() { methodArgs = new ReplaceArgs() { Target = "", Replacer = "" }, isApplyToName = true, MethodName = methodName, IsChecked = true });
                     WireEventHandlers(methodList.Last());
                     break;
                 case "Trim":
-                    methodList.Add(new TrimAction() { methodArgs = new TrimArgs() { initialPos = 0, Length = 0 }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new TrimAction() { methodArgs = new TrimArgs() { trimCharacters = "" }, isApplyToName = true, MethodName = methodName, IsChecked = true });
                     WireEventHandlers(methodList.Last());
                     break;
                 case "Move":
-                    methodList.Add(new MoveAction() { methodArgs = new MoveArgs() { FromPos = 0, Length = 0, ToPos = 0 }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new MoveAction() { methodArgs = new MoveArgs() { FromPos = 0, Length = 0, ToPos = 0 }, isApplyToName = true, MethodName = methodName, IsChecked = true });
                     WireEventHandlers(methodList.Last());
                     break;
                 case "New Name":
-                    methodList.Add(new NewNameAction() { methodArgs = new NewNameArgs() { NewName = "Default" }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new NewNameAction() { methodArgs = new NewNameArgs() { NewName = "Default" }, isApplyToName = true, MethodName = methodName, IsChecked = true });
                     WireEventHandlers(methodList.Last());
                     break;
                 case "Fullname Normalize":
-                    methodList.Add(new FullnameNormalizeAction() { methodArgs = new FullnameNormalizeArgs() { }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new FullnameNormalizeAction() { methodArgs = new FullnameNormalizeArgs() { }, isApplyToName = true, MethodName = methodName, IsChecked = true });
                     WireEventHandlers(methodList.Last());
                     break;
                 case "Unique ID":
-                    methodList.Add(new UniqueIDAction() { methodArgs = new UniqueIDArgs() { }, MethodName = methodName, IsChecked = true });
+                    methodList.Add(new UniqueIDAction() { methodArgs = new UniqueIDArgs() { }, isApplyToName = true, MethodName = methodName, IsChecked = true });
                     WireEventHandlers(methodList.Last());
                     break;
                 default:
                     break;
             }
-            
+
         }
 
         private void RemoveMethodlButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var selectedMethod = MethodListView.SelectedItem as IMethodAction;
-
-                for (int i = 0; i < AddMethodMenuItem.Items.Count; i++)
-                {
-                    MenuItem selectedItem = (MenuItem)AddMethodMenuItem.Items[i];
-                    if (selectedItem.Header.ToString() == selectedMethod.MethodName)
-                    {
-                        selectedItem.IsChecked = false;
-                        break;
-                    }
-                }
-                methodList.Remove(selectedMethod);
-                foreach (var item in selectedFileList as BindingList<FileInformation>)
+                methodList.Remove(MethodListView.SelectedItem as IMethodAction);
+                foreach (var item in selectedFileList)
                 {
                     item.newName = item.fileName;
-                    item.UpdateInfo(item.fileName);
+                    item.newExt = item.originalExtension;
+                    item.UpdatePreview();
+                    OnMethodListChanged();
                 }
-                for (int i = 0; i < selectedFileList.Count; i++)
+                foreach (var item in selectedFolderList)
                 {
+                    item.newName = item.folderName;
+                    item.UpdatePreview();
                     OnMethodListChanged();
                 }
             }
             catch (Exception ex)
             {
-                for (int i = 0; i < selectedFileList.Count; i++)
+                foreach (var item in selectedFileList)
                 {
-                    selectedFileList[i].fileError = ex.ToString();
+                    item.fileError = ex.ToString();
+                    item.newName = item.fileName;
+                    item.newExt = item.originalExtension;
+                    item.UpdatePreview();
+                    OnMethodListChanged();
+                }
+                foreach (var item in selectedFolderList)
+                {
+                    item.folderError = ex.ToString();
+                    item.newName = item.folderName;
+                    item.UpdatePreview();
+                    OnMethodListChanged();
                 }
             }
         }
@@ -328,14 +326,50 @@ namespace WindowProjects
         //CheckBox class Method
         private void MethodCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            var selectedMethod = MethodListView.SelectedItem as ReplaceAction;
+            var selectedMethod = MethodListView.SelectedItem as IMethodAction;
             selectedMethod.IsChecked = true;
+            foreach (var item in selectedFileList)
+            {
+                item.newName = item.fileName;
+                item.newExt = item.originalExtension;
+                item.realName = item.newName.Trim().Replace(item.newExt.Length == 0 ? " " : item.newExt, "");
+                item.UpdatePreview();
+                OnMethodListChanged();
+            }
+            foreach (var item in selectedFolderList)
+            {
+                item.newName = item.folderName;
+                item.UpdatePreview();
+                OnMethodListChanged();
+            }
         }
+        //Method Checkbox Events
+        private void MethodCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var selectedMethod = MethodListView.SelectedItem as IMethodAction;
+            selectedMethod.IsChecked = false;
+            foreach (var item in selectedFileList)
+            {
+                item.newName = item.fileName;
+                item.newExt = item.originalExtension;
+                item.realName = item.newName.Trim().Replace(item.newExt.Length == 0 ? " " : item.newExt, "");
+                item.UpdatePreview();
+                OnMethodListChanged();
+            }
+            foreach (var item in selectedFolderList)
+            {
+                item.newName = item.folderName;
+                item.UpdatePreview();
+                OnMethodListChanged();
+            }           
+        }
+        //Method Edit Events
         private void UpdateDetail_Clicked(object sender, RoutedEventArgs e)
         {
             var item = MethodListView.SelectedItem as IMethodAction;
             item.ShowUpdateDetailWindow();
         }
+        //Form connection between windows (Subcribe function)
         private void WireEventHandlers(IMethodAction action)
         {
             UpdateEventHandler handler = new UpdateEventHandler(OnHandler1);
@@ -345,6 +379,25 @@ namespace WindowProjects
         {
             OnMethodListChanged();
         }
+        //File list Changed Event
+        public void OnFolderListChange()
+        {
+            try
+            {
+                if (methodList.Count == 0)
+                {
+                    return;
+                }
+                OnMethodListChanged();
+            }
+            catch (Exception ex)
+            {
+                for (int i = 0; i < selectedFileList.Count; i++)
+                {
+                    selectedFolderList[i].folderError = ex.ToString();
+                }
+            }
+        }
         public void OnFileListChange()
         {
             try
@@ -353,15 +406,7 @@ namespace WindowProjects
                 {
                     return;
                 }
-                for (int i = 0; i < selectedFileList.Count; i++)
-                {
-                    string originalName = selectedFileList[i].fileName;
-                    foreach (var action in methodList)
-                    {
-                        selectedFileList[i].newName = action.Process(selectedFileList[i].newName);
-                    }
-                    selectedFileList[i].UpdateInfo(originalName);
-                }
+                OnMethodListChanged();
             }
             catch (Exception ex)
             {
@@ -375,36 +420,49 @@ namespace WindowProjects
         {
             try
             {
-                if (isExtension)
+                for (int i = 0; i < selectedFileList.Count; i++)
                 {
-                    //Extension
-                    for (int i = 0; i < selectedFileList.Count; i++)
+                    foreach (var action in methodList)
                     {
-                        string originalPath = selectedFileList[i].filePath;
-                        string originalName = selectedFileList[i].fileName;
-                        string originalExt = selectedFileList[i].fileExtension;
-                        foreach (var action in methodList)
+                        if (action.IsChecked == true)
                         {
-                            selectedFileList[i].fileExtension = action.Process(selectedFileList[i].fileExtension);
-                        }
+                            if (action.isApplyToName == true)
+                            {
+                                int collisionCount = 0;
+                                selectedFileList[i].realName = action.Process(selectedFileList[i].realName);
+                                selectedFileList[i].newName = selectedFileList[i].realName + selectedFileList[i].originalExtension;
+                                for (int j = 0; j < i; j++)
+                                {
+                                    if(string.Compare(selectedFileList[j].newName, selectedFileList[i].newName) == 0)
+                                    {
+                                        collisionCount++;
+                                    }
+                                }
+                                if (collisionCount > 0)
+                                {
+                                    selectedFileList[i].newName = String.Format($"{selectedFileList[i].realName} ({collisionCount.ToString()}){ selectedFileList[i].newExt} ");
+                                }
+                            }
+                            else if(action.isApplyToName == false)
+                            {
+                                selectedFileList[i].newExt = action.Process(selectedFileList[i].newExt);
+                                selectedFileList[i].newName = selectedFileList[i].newName.Replace(selectedFileList[i].originalExtension, selectedFileList[i].newExt);
+                            }
 
-                        selectedFileList[i].newName = selectedFileList[i].newName.Replace(originalExt, selectedFileList[i].fileExtension);
-                        selectedFileList[i].UpdateInfo(originalExt);
-                    }
-                }
-                else
-                {
-                    //Name
-                    for (int i = 0; i < selectedFileList.Count; i++)
-                    {
-                        string originalPath = selectedFileList[i].filePath;
-                        string originalName = selectedFileList[i].fileName;
-                        foreach (var action in methodList)
-                        {
-                            selectedFileList[i].newName = action.Process(selectedFileList[i].newName);
                         }
-                        selectedFileList[i].UpdateInfo(originalName);
                     }
+                    selectedFileList[i].UpdatePreview();
+                }
+                for (int i = 0; i < selectedFolderList.Count; i++)
+                {
+                    foreach (var action in methodList)
+                    {
+                        if (action.IsChecked == true)
+                        {
+                                selectedFolderList[i].newName = action.Process(selectedFolderList[i].newName);
+                        }
+                    }
+                    selectedFolderList[i].UpdatePreview();
                 }
             }
             catch (Exception ex)
@@ -415,9 +473,39 @@ namespace WindowProjects
                 }
             }
         }
+
         private void Starting_Batch(object sender, RoutedEventArgs e)
         {
-           
+            if (!selectedFileList.Any() && !selectedFolderList.Any())
+            {
+                MessageBox.Show("Please add a file or folder!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (!methodList.Any())
+            {
+                MessageBox.Show("Please add a method!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (selectedFileList.Any())
+            {
+                foreach (var item in selectedFileList)
+                {
+                    var originalName = item.fileName;
+                    item.fileName = item.newName;
+                    File.Move(item.filePath, item.filePath.Replace(originalName, item.newName));
+                }
+                selectedFileList.Clear();
+            }
+            if (selectedFolderList.Any())
+            {
+                foreach (var item in selectedFolderList)
+                {
+                    item.folderName = item.newName;
+                    Directory.Move(item.folderPath + item, item.folderPath);
+                }
+                selectedFolderList.Clear();
+                return;
+            }
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
@@ -430,6 +518,7 @@ namespace WindowProjects
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             methodList.Clear();
+            OnMethodListChanged();
         }
 
         //ARROW BUTTON HANDLER
@@ -459,7 +548,7 @@ namespace WindowProjects
             {
                 SwapFile(selectedIndex, selectedIndex - 1);
                 FilePathListBinding.SelectedItem = selectedFileList[selectedIndex - 1];
-            } 
+            }
         }
 
         private void DownFileButton_Click(object sender, RoutedEventArgs e)
@@ -632,7 +721,7 @@ namespace WindowProjects
                 binaryFormatter.Serialize(stream, objectToWrite);
             }
         }
-        
+
         public static T ReadFromBinaryFile<T>(string filePath)
         {
             using (Stream stream = File.Open(filePath, FileMode.Open))
@@ -644,7 +733,7 @@ namespace WindowProjects
 
         FileInfo presetsPathFile = new FileInfo("./PresetsFile.txt");
         BindingList<FileInformation> savedPresetFiles = new BindingList<FileInformation>();
-        
+
         private void SavePresetButton_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -668,7 +757,7 @@ namespace WindowProjects
 
                 if (savedPresetFiles.Count() == 0)
                 {
-                    savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = saveLoc, fileExtension = PresetFile.Extension });
+                    savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = saveLoc, originalExtension = PresetFile.Extension });
 
                     //Write preset file path to .txt
                     using (StreamWriter sw = presetsPathFile.AppendText())
@@ -689,7 +778,7 @@ namespace WindowProjects
 
                     if (!isFileExist)
                     {
-                        savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = saveLoc, fileExtension = PresetFile.Extension });
+                        savedPresetFiles.Add(new FileInformation() { fileName = PresetFile.Name, filePath = saveLoc, originalExtension = PresetFile.Extension });
 
                         //Write preset file path to .txt
                         using (StreamWriter sw = presetsPathFile.AppendText())
@@ -714,23 +803,48 @@ namespace WindowProjects
             {
                 methodList.Add(item);
             }
+            OnMethodListChanged();
         }
-
-        bool isExtension = false;
-
+        List<string> ApplyToList = new List<string> { "Name", "Extension" };
         private void ApplyToComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cmb = sender as ComboBox;
+            if (!cmb.HasItems)
+            {
+                return;
+            }
             string applyOption = cmb.SelectedValue.ToString();
+            var action = MethodListView.SelectedItem as IMethodAction;
             if (applyOption == "Extension")
             {
-                isExtension = true;
+                action.isApplyToName = false;
             }
-            else
+            else if(applyOption == "Name")
             {
-                isExtension = false;
+                action.isApplyToName = true;
             }
+            foreach (var item in selectedFileList)
+            {
+                item.newName = item.fileName;
+                item.newExt = item.originalExtension;
+                item.realName = item.newName.Trim().Replace(item.newExt.Length == 0 ? " " : item.originalExtension, "");
+            }
+            foreach(var item in selectedFolderList)
+            {
+                item.newName = item.folderName;
+            }
+            OnMethodListChanged();
+        }
+        private void ClearFile_Click(object sender, RoutedEventArgs e)
+        {
+            selectedFileList.Clear();
+            OnFileListChange();
+        }
 
+        private void ClearFolder_Click(object sender, RoutedEventArgs e)
+        {
+            selectedFolderList.Clear();
+            OnFolderListChange();
         }
     }
 }

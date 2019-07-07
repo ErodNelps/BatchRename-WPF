@@ -8,6 +8,12 @@
         mc:Ignorable="d"
         Title="DetailUpdateWindow" x:Name="UpdateWindow" Height="160" Width="325" WindowStartupLocation="CenterScreen">
     <Window.Resources>
+        <DataTemplate x:Key="DefaultDetailTemplate">
+            <Canvas>
+                <TextBlock Text="Choose Case:" FontSize="16" Margin="5"/>
+                <ComboBox SelectionChanged="ComboBox_SelectionChanged" Canvas.Left="120" Canvas.Top="6" Width="160"></ComboBox>
+            </Canvas>
+        </DataTemplate>
         <DataTemplate x:Key="NewCaseDetailTemplate">
             <Canvas>
                 <TextBlock Text="Choose Case:" FontSize="16" Margin="5"/>
@@ -52,12 +58,7 @@
         <DataTemplate x:Key="TrimDetailTemplate">
             <Canvas>
                 <Label Content="From position:" FontSize="13" Canvas.Left="5" Canvas.Top="5"></Label>
-                <Label Content="Length:" FontSize="13" Canvas.Left="5" Canvas.Top="45" ></Label>
-
-                <StackPanel Canvas.Left="100">
-                    <TextBox Text="{Binding initialPos}" FontSize="16" Height="40" Width="180" Margin="0, 0, 0, 5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-                    <TextBox Text="{Binding Length}" FontSize="16" Height="40" Width="180" Margin="0, 0, 0, 5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-                </StackPanel>
+                <TextBox Text="{Binding trimCharacters}" FontSize="16" Height="40" Width="180" Margin="0, 0, 0, 5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
             </Canvas>
         </DataTemplate>
 

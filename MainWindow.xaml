@@ -116,7 +116,7 @@
                                             <Image Source="images/cross.png" RenderOptions.BitmapScalingMode="HighQuality" Width="18" Height="18"/>
                                         </Button>
 
-                                        <CheckBox x:Name="MethodCheckBox" IsChecked="{Binding IsChecked}" Checked="MethodCheckBox_Checked" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
+                                        <CheckBox x:Name="MethodCheckBox" IsChecked="{Binding IsChecked}" Checked="MethodCheckBox_Checked" Unchecked="MethodCheckBox_Unchecked" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
 
                                         <Label Content="{Binding MethodName}" HorizontalContentAlignment="Center" Foreground="Black" FontWeight="DemiBold" FontSize="16"/>
                                     </DockPanel>
@@ -132,9 +132,7 @@
                                         </Button>
                                         <StackPanel x:Name="ApplyToStackPanel" Orientation="Horizontal" Canvas.Left="5" Canvas.Top="45" VerticalAlignment="Center">
                                             <TextBlock Text="Apply to: " FontWeight="DemiBold" VerticalAlignment="Center"></TextBlock>
-                                            <ComboBox x:Name="ApplyToCombobox" SelectedValuePath="Content" Width="80" SelectionChanged="ApplyToComboBox_SelectionChanged" Margin="5,0,0,0">
-                                                <ComboBoxItem Content="Name" IsSelected="True"></ComboBoxItem>
-                                                <ComboBoxItem Content="Extension"></ComboBoxItem>
+                                            <ComboBox x:Name="ApplyToCombobox" ItemsSource="{Binding ApplyTo}" SelectedIndex="0" Width="80" SelectionChanged="ApplyToComboBox_SelectionChanged" Margin="5,0,0,0">
                                             </ComboBox>
                                         </StackPanel>
                                     </Canvas>
@@ -161,6 +159,13 @@
                                         </Button>
                                     </Border>
                                     <Separator/>
+                                    <Button Background="Transparent" Click="ClearFile_Click">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="images/clear.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                            <TextBlock Text="Clear" Margin="4,0,0,0"></TextBlock>
+                                        </StackPanel>
+                                    </Button>
+                                    <Separator/>
                                     <Button Background="Transparent" Click="UpFileButton_Click">
                                         <Image Source="images/up.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                     </Button>
@@ -176,7 +181,7 @@
                                 </ToolBar>
                             </ToolBarTray>
                         </StackPanel>
-                        <ListView x:Name="FilePathListBinding" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,18,0,-18">
+                        <ListView x:Name="FilePathListBinding" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
                                     <Setter Property="Height" Value="{Binding ActualHeight, Converter={StaticResource heightConverter}, ElementName=FilePathListBinding}" />
@@ -208,7 +213,7 @@
                 <TabItem Header="Rename Folders">
                     <DockPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                            <ToolBarTray>
+                            <ToolBarTray Width="535">
                                 <ToolBar>
                                     <Border Width="60" Height="25" CornerRadius="10">
 
@@ -219,6 +224,12 @@
                                             </StackPanel>
                                         </Button>
                                     </Border>
+                                    <Button Background="Transparent" Click="ClearFolder_Click">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="images/clear.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
+                                            <TextBlock Text="Clear" Margin="4,0,0,0"></TextBlock>
+                                        </StackPanel>
+                                    </Button>
                                     <Separator/>
                                     <Button Background="Transparent" Click="UpFolderButton_click">
                                         <Image Source="images/up.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>

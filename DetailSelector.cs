@@ -11,6 +11,7 @@ namespace WindowsProgramming
     //Detail Data Template Selector
     public class DetailDataTemplateSelector : DataTemplateSelector
     {
+        public DataTemplate DefaultDetailTemplate { get; set; }
         public DataTemplate NewCaseDetailTemplate { get; set; }
         public DataTemplate RemovePatternDetailTemplate { get; set; }
         public DataTemplate ReplaceDetailTemplate { get; set; }
@@ -21,8 +22,8 @@ namespace WindowsProgramming
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             IMethodArgs args = item as IMethodArgs;
-            if(item == null)
-                return ((FrameworkElement)container).FindResource("MoveDetailTemplate") as DataTemplate;
+            if(item == null || args.methodType == "FullnameNormalize" || args.methodType == "UniqueID")
+                return ((FrameworkElement)container).FindResource("DefaultDetailTemplate") as DataTemplate;
             return ((FrameworkElement)container).FindResource(args.methodType + "DetailTemplate") as DataTemplate;
         }
     }

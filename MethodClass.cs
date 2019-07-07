@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -42,7 +43,7 @@ namespace WindowsProgramming
     }
     //Replace Args
     [Serializable]
-    public class ReplaceArgs : IMethodArgs, INotifyPropertyChanged
+    public class ReplaceArgs : IMethodArgs
     {
         public string methodType
         {
@@ -51,22 +52,8 @@ namespace WindowsProgramming
                 return "Replace";
             }
         }
-        private string _target;
-        private string _replacer;
-        public string Target {
-            get { return _target; }
-            set { _target = value; RaiseChangeEvent("Target"); }
-        }
-        public string Replacer{
-            get { return _replacer; }
-            set { _replacer = value; RaiseChangeEvent("Replacer"); }
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        void RaiseChangeEvent(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public string Target { get; set; }
+        public string Replacer { get; set; }
     }
     //Trim Args
     [Serializable]
@@ -79,8 +66,7 @@ namespace WindowsProgramming
                 return "Trim";
             }
         }
-        public int initialPos { get; set; }
-        public int Length { get; set; }
+        public string trimCharacters { get; set; }
     }
     [Serializable]
     public class FullnameNormalizeArgs : IMethodArgs
@@ -155,6 +141,9 @@ namespace WindowsProgramming
         event UpdateEventHandler newNameEvent;
         string MethodName { get; set; }
         bool IsChecked { get; set; }
+        //desperate times need desperate solutions
+        List<string> ApplyTo { get;}
+        bool isApplyToName { get; set; }
         IMethodArgs methodArgs { get; set; }
         string Description { get; }
         string Process(string origin);
@@ -166,6 +155,14 @@ namespace WindowsProgramming
     {
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
+        public List<string> ApplyTo
+        {
+            get
+            {
+                return new List<string> { "Name", "Extension" };
+            }
+        }
+        public bool isApplyToName { get; set; }
 
         public IMethodArgs methodArgs { get; set; }
         public string Process(string origin)
@@ -223,6 +220,14 @@ namespace WindowsProgramming
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
         public IMethodArgs methodArgs { get; set; }
+        public List<string> ApplyTo
+        {
+            get
+            {
+                return new List<string> { "Name", "Extension" };
+            }
+        }
+        public bool isApplyToName { get; set; }
         public string Process(string origin)
         {
             string result = " ";
@@ -243,6 +248,8 @@ namespace WindowsProgramming
                     TextInfo text_info = culture_info.TextInfo;
                     result = text_info.ToTitleCase(origin);
                     break;
+                default:
+                    break;
             }
             return result;
         }
@@ -251,6 +258,10 @@ namespace WindowsProgramming
             get
             {
                 var args = methodArgs as NewCaseArgs;
+                switch(args.selectedStyle)
+                {
+
+                }
                 var result = args.selectedStyle;
                 return result;
             }
@@ -273,6 +284,13 @@ namespace WindowsProgramming
             if (window.ShowDialog() == true)
             {
                 RaiseChangeEvent("Description");
+                UpdateEvent e1 = new UpdateEvent();
+                var args = methodArgs as ReplaceArgs;
+                if (newNameEvent != null)
+                {
+                    newNameEvent(args, e1);
+                }
+                e1 = null;
             }
         }
     }
@@ -282,6 +300,14 @@ namespace WindowsProgramming
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
         public IMethodArgs methodArgs { get; set; }
+        public List<string> ApplyTo
+        {
+            get
+            {
+                return new List<string> { "Name", "Extension" };
+            }
+        }
+        public bool isApplyToName { get; set; }
         public string Process(string origin)
         {
             var result = FullNameNormalize(origin);
@@ -307,8 +333,14 @@ namespace WindowsProgramming
         {
             get
             {
-                var args = methodArgs as ReplaceArgs;
-                var result = $"Replace {args.Target} with {args.Replacer}";
+                UpdateEvent e1 = new UpdateEvent();
+                var args = methodArgs as FullnameNormalizeArgs;
+                if (newNameEvent != null)
+                {
+                    newNameEvent(args, e1);
+                }
+                e1 = null;            
+                var result = "Normalize name";
                 return result;
             }
         }
@@ -324,21 +356,7 @@ namespace WindowsProgramming
         public void ShowUpdateDetailWindow()
         {
             var window = new DetailUpdateWindow(
-                methodArgs as ReplaceArgs);
-
-            if (window.ShowDialog() == true)
-            {
-                string message = " Updated";
-                UpdateEvent e1 = new UpdateEvent();
-                var args = methodArgs as ReplaceArgs;
-                if (newNameEvent != null) ;
-                {
-                    newNameEvent(args, e1);
-                }
-
-                e1 = null;
-                RaiseChangeEvent("Description");
-            }
+                methodArgs as FullnameNormalizeArgs);
         }
     }
     [Serializable]
@@ -347,17 +365,31 @@ namespace WindowsProgramming
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
         public IMethodArgs methodArgs { get; set; }
+        public List<string> ApplyTo
+        {
+            get
+            {
+                return new List<string> { "Name", "Extension" };
+            }
+        }
+        public bool isApplyToName { get; set; }
         public string Process(string origin)
         {
-            string result = " ";
+            var result = UniqueName(origin);
             return result;
         }
         public string Description
         {
             get
             {
-                var args = methodArgs as NewCaseArgs;
-                var result = args.selectedStyle;
+                var args = methodArgs as UniqueIDArgs;
+                UpdateEvent e1 = new UpdateEvent();
+                if (newNameEvent != null)
+                {
+                    newNameEvent(args, e1);
+                }
+                e1 = null;
+                var result = "Create unique ID";
                 return result;
             }
         }
@@ -382,12 +414,7 @@ namespace WindowsProgramming
         public void ShowUpdateDetailWindow()
         {
             var window = new DetailUpdateWindow(
-                methodArgs as NewCaseArgs);
-
-            if (window.ShowDialog() == true)
-            {
-                RaiseChangeEvent("Description");
-            }
+                methodArgs as UniqueIDArgs);
         }
     }
     
@@ -397,9 +424,21 @@ namespace WindowsProgramming
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
         public IMethodArgs methodArgs { get; set; }
+        public List<string> ApplyTo
+        {
+            get
+            {
+                return new List<string> { "Name", "Extension" };
+            }
+        }
+        public bool isApplyToName { get; set; }
         public string Process(string origin)
         {
             var args = methodArgs as RemovePatternArgs;
+            if(args.Pattern == "")
+            {
+                return origin;
+            }
             string result = origin.Replace(args.Pattern, "");
             return result;
         }
@@ -430,6 +469,13 @@ namespace WindowsProgramming
             if (window.ShowDialog() == true)
             {
                 RaiseChangeEvent("Description");
+                var args = methodArgs as RemovePatternArgs;
+                UpdateEvent e1 = new UpdateEvent();
+                if (newNameEvent != null)
+                {
+                    newNameEvent(args, e1);
+                }
+                e1 = null;
             }
         }
     }
@@ -440,9 +486,24 @@ namespace WindowsProgramming
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
         public IMethodArgs methodArgs { get; set; }
+        public List<string> ApplyTo
+        {
+            get
+            {
+                return new List<string> { "Name", "Extension" };
+            }
+        }
+        public bool isApplyToName { get; set; }
         public string Process(string origin)
         {
-            string result = " ";
+            var args = methodArgs as TrimArgs;
+            var result = origin;
+            if (args.trimCharacters.Length == 0)
+                return result.Trim();
+            foreach(var character in args.trimCharacters)
+            {
+                result.Trim('.');
+            }
             return result;
         }
         public string Description
@@ -450,7 +511,12 @@ namespace WindowsProgramming
             get
             {
                 var args = methodArgs as TrimArgs;
-                var result = $"Trim character(s): ";
+                var descriptionString = "";
+                foreach(var character in args.trimCharacters)
+                {
+                    descriptionString += $"'{character}' ";
+                }
+                var result = $"Trim character(s): {descriptionString}";
                 return result;
             }
         }
@@ -472,6 +538,13 @@ namespace WindowsProgramming
             if (window.ShowDialog() == true)
             {
                 RaiseChangeEvent("Description");
+                var args = methodArgs as TrimArgs;
+                UpdateEvent e1 = new UpdateEvent();
+                if (newNameEvent != null)
+                {
+                    newNameEvent(args, e1);
+                }
+                e1 = null;
             }
         }
     }
@@ -482,6 +555,14 @@ namespace WindowsProgramming
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
         public IMethodArgs methodArgs { get; set; }
+        public List<string> ApplyTo
+        {
+            get
+            {
+                return new List<string> { "Name", "Extension" };
+            }
+        }
+        public bool isApplyToName { get; set; }
         public string Process(string origin)
         {
             var args = methodArgs as MoveArgs;
@@ -525,6 +606,13 @@ namespace WindowsProgramming
             if (window.ShowDialog() == true)
             {
                 RaiseChangeEvent("Description");
+                var args = methodArgs as MoveArgs;
+                UpdateEvent e1 = new UpdateEvent();
+                if (newNameEvent != null)
+                {
+                    newNameEvent(args, e1);
+                }
+                e1 = null;
             }
         }
     }
@@ -535,6 +623,14 @@ namespace WindowsProgramming
         public string MethodName { get; set; }
         public bool IsChecked { get; set; }
         public IMethodArgs methodArgs { get; set; }
+        public List<string> ApplyTo
+        {
+            get
+            {
+                return new List<string> { "Name", "Extension" };
+            }
+        }
+        public bool isApplyToName { get; set; }
         public string Process(string origin)
         {
             var args = methodArgs as NewNameArgs;
@@ -568,6 +664,13 @@ namespace WindowsProgramming
             if (window.ShowDialog() == true)
             {
                 RaiseChangeEvent("Description");
+                var args = methodArgs as NewNameArgs;
+                UpdateEvent e1 = new UpdateEvent();
+                if (newNameEvent != null)
+                {
+                    newNameEvent(args, e1);
+                }
+                e1 = null;
             }
         }
     }
