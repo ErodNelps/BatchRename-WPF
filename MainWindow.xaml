@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:WindowsProgramming"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="WindowProjects.MainWindow"
         mc:Ignorable="d"
-        Title="BatchReName" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="Batch_Renamer" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <DockPanel>
         <StackPanel DockPanel.Dock="Top">
             <ToolBarTray>
@@ -179,6 +179,11 @@
                                     <Button Background="Transparent" Click="DownMostFileButton_Click">
                                         <Image Source="images/doubledown.png" RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="18"/>
                                     </Button>
+                                    <Label Content="Collisions:" FontSize="14" VerticalContentAlignment="Center"></Label>
+                                    <ComboBox x:Name="collisionCombobox" SelectedValuePath ="Content" SelectedValue="Append suffix" Width="150" VerticalContentAlignment="Center" FontSize="14" SelectionChanged="Collision_Changed">
+                                        <ComboBoxItem Content="Keep original name"></ComboBoxItem>
+                                        <ComboBoxItem Content="Append suffix"></ComboBoxItem>
+                                    </ComboBox>
                                 </ToolBar>
                             </ToolBarTray>
                         </StackPanel>
@@ -260,8 +265,8 @@
                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FolderListBinding}"
                                             Header="New Name" DisplayMemberBinding="{Binding newName}"/>
                                     <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FolderListBinding}"
-                                            Header="Parent path" DisplayMemberBinding="{Binding parent}"/>
-                                    <GridViewColumn Width="Auto" Header="Error" DisplayMemberBinding="{Binding ExtraCheckbox}">
+                                            Header="Parent path" DisplayMemberBinding="{Binding folderPath}"/>
+                                    <GridViewColumn Width="Auto" Header="Error" DisplayMemberBinding="{Binding folderError}">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Label Content="None" Foreground="Red"/>

@@ -24,6 +24,14 @@ namespace WindowsProgramming
         public ConfirmWindow(BindingList<FileInformation> fileList, BindingList<FolderInformation> folderList)
         {
             InitializeComponent();
+            FileListBinding.ItemsSource = fileList;
+            FolderListBinding.ItemsSource = folderList;
+        }
+
+        private void StartButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
         }
     }
 }

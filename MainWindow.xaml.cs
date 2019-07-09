@@ -28,13 +28,8 @@ namespace WindowProjects
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        void RaiseChangeEvent(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
         public MainWindow()
         {
             InitializeComponent();
@@ -230,7 +225,7 @@ namespace WindowProjects
                 DirectoryInfo[] subDirectories = selectedDirectory.GetDirectories();
                 foreach (object subDir in subDirectories)
                 {
-                    selectedFolderList.Add(new FolderInformation() { folderName = subDir.ToString(), folderPath = selectedDirPath + subDir.ToString(), newName = subDir.ToString(), folderError = "OK" });
+                    selectedFolderList.Add(new FolderInformation() { folderName = subDir.ToString(), folderPath = $"{ selectedDirPath}\\{subDir.ToString()}", newName = subDir.ToString(), folderError = "OK" });
                 }
                 OnFolderListChange();
             }
@@ -433,28 +428,30 @@ namespace WindowProjects
                 {
                     if (String.Compare(selectedFileList[i].newName, selectedFileList[j].newName) == 0)
                     {
-                        int num = 1;
-
-                        ////Get file name without extension
-                        //int index = fileList[i].IndexOf(ext);
-                        //string fileName = fileList[i].Remove(index);
-
-                        var tempNewName = selectedFileList[i].realName + num + ext;
-                        while (k < selectedFileList.Count)
+                        if (isAppendSuffix == true)
                         {
-                            if (String.Compare(tempNewName, selectedFileList[k].newName) == 0)
+                            int num = 1;
+                            var tempNewName = $"{selectedFileList[i].realName} ({num}){ext}";
+                            while (k < selectedFileList.Count)
                             {
-                                num++;
-                                tempNewName = selectedFileList[i].realName + num + ext;
-                                k = 0;
+                                if (String.Compare(tempNewName, selectedFileList[k].newName) == 0)
+                                {
+                                    num++;
+                                    tempNewName = $"{selectedFileList[i].realName} ({num}){ext}";
+                                    k = 0;
+                                }
+                                else
+                                {
+                                    k++;
+                                }
                             }
-                            else
-                            {
-                                k++;
-                            }
+                            selectedFileList[j].newName = tempNewName;
+                            k = 0;
                         }
-                        selectedFileList[j].newName = tempNewName;
-                        k = 0;
+                        else
+                        {
+                            selectedFileList[j].newName = selectedFileList[j].fileName;
+                        }
                         selectedFileList[j].UpdatePreview();
                     }
                 }
@@ -471,24 +468,31 @@ namespace WindowProjects
                 {
                     if (String.Compare(selectedFolderList[i].newName, selectedFolderList[j].newName) == 0)
                     {
-                        int num = 1;
-
-                        var tempNewName = selectedFolderList[i].newName + num;
-                        while (k < selectedFolderList.Count)
+                        if (isAppendSuffix == true)
                         {
-                            if (String.Compare(tempNewName, selectedFolderList[k].newName) == 0)
+                            int num = 1;
+
+                            var tempNewName = $"{selectedFolderList[i].newName} ({num})";
+                            while (k < selectedFolderList.Count)
                             {
-                                num++;
-                                tempNewName = selectedFolderList[i].newName + num;
-                                k = 0;
+                                if (String.Compare(tempNewName, selectedFolderList[k].newName) == 0)
+                                {
+                                    num++;
+                                    tempNewName = $"{selectedFolderList[i].newName} ({num})";
+                                    k = 0;
+                                }
+                                else
+                                {
+                                    k++;
+                                }
                             }
-                            else
-                            {
-                                k++;
-                            }
+                            selectedFolderList[j].newName = tempNewName;
+                            k = 0;
                         }
-                        selectedFolderList[j].newName = tempNewName;
-                        k = 0;
+                        else
+                        {
+                            selectedFolderList[j].newName = selectedFolderList[j].folderName;
+                        }
                         selectedFolderList[j].UpdatePreview();
                     }
                 }
@@ -518,7 +522,7 @@ namespace WindowProjects
                     }                 
                     selectedFileList[i].UpdatePreview();
                 }
-
+                replaceSameListName();
                 for (int i = 0; i < selectedFolderList.Count; i++)
                 {
                     foreach (var action in methodList)
@@ -554,30 +558,27 @@ namespace WindowProjects
                 return;
             }
             ConfirmWindow confirm = new ConfirmWindow(selectedFileList, selectedFolderList);
-            if(confirm.ShowDialog() == true)
+            if (confirm.ShowDialog() == true)
             {
+                if (selectedFileList.Any())
+                {
+                    foreach (var item in selectedFileList)
+                    {
+                        var originalName = item.fileName;
+                        File.Move(item.filePath, item.filePath.Replace(originalName, item.newName));
+                    }
+                    selectedFileList.Clear();
+                }
+                if (selectedFolderList.Any())
+                {
 
-            }
-            if (selectedFileList.Any())
-            {
-                foreach (var item in selectedFileList)
-                {
-                    replaceSameListName();
-                    var originalName = item.fileName;
-                    item.fileName = item.newName;
-                    File.Move(item.filePath, item.filePath.Replace(originalName, item.newName));
+                    foreach (var item in selectedFolderList)
+                    {
+                        var originalName = item.folderName;
+                        Directory.Move(item.folderPath, item.folderPath.Replace(originalName, item.newName));
+                    }
+                    selectedFolderList.Clear();            
                 }
-                selectedFileList.Clear();
-            }
-            if (selectedFolderList.Any())
-            {
-                foreach (var item in selectedFolderList)
-                {
-                    //replaceSameFolderName();
-                    item.folderName = item.newName;
-                    Directory.Move(item.folderPath + item, item.folderPath);
-                }
-                selectedFolderList.Clear();
                 return;
             }
         }
@@ -918,6 +919,21 @@ namespace WindowProjects
         {
             selectedFolderList.Clear();
             OnFolderListChange();
+        }
+
+        public bool isAppendSuffix;
+        private void Collision_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox collisionCmb = sender as ComboBox;
+            string applyOption = collisionCmb.SelectedValue.ToString();
+            if(applyOption == "Append suffix")
+            {
+                isAppendSuffix = true;
+            }
+            else
+            {
+                isAppendSuffix = false;
+            }
         }
     }
 }

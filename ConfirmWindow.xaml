@@ -10,13 +10,8 @@
         <DockPanel LastChildFill="True">
             <Label DockPanel.Dock="Top" Content="Apply these changes?" FontSize="16"></Label>
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Height="50">
-                <Label Content="Collisions:" FontSize="16" VerticalContentAlignment="Center"></Label>
-                <ComboBox SelectedItem="Append suffix" Width="100" Margin="0,5,150,5">
-                    <ComboBoxItem Content="Keep original name"></ComboBoxItem>
-                    <ComboBoxItem Content="Append suffix"></ComboBoxItem>
-                </ComboBox>
-                <Button Content="Start batch" Height="40" Width="70" Margin="0,0,10,0"></Button>
-                <Button Content="Cancel" Height="40" Width="70" Margin="0,0,10,0"></Button>
+                <Button Content="Start batch" Click="StartButton_Clicked" Height="40" Width="70" Margin="0,0,10,0"></Button>
+                <Button Content="Cancel" IsCancel="True" Height="40" Width="70" Margin="0,0,10,0"></Button>
             </StackPanel>
             <ListView x:Name="FileListBinding" ScrollViewer.HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Top" Height="150">
                 <ListView.ItemContainerStyle>
@@ -46,7 +41,7 @@
             <ListView x:Name="FolderListBinding" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="Height" Value="{Binding ActualHeight, Converter={StaticResource heightConverter}, ElementName=FilePathListBinding}" />
+                        <Setter Property="Height" Value="{Binding ActualHeight, Converter={StaticResource heightConverter}, ElementName=FolderPathListBinding}" />
                     </Style>
                 </ListView.ItemContainerStyle>
 

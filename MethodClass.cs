@@ -230,7 +230,7 @@ namespace WindowsProgramming
         public bool isApplyToName { get; set; }
         public string Process(string origin)
         {
-            string result = " ";
+            string result = origin;
             var selected = (methodArgs as NewCaseArgs).selectedStyle;
             
             switch(selected)
@@ -459,7 +459,6 @@ namespace WindowsProgramming
         void RaiseChangeEvent(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
         }
         public void ShowUpdateDetailWindow()
         {
@@ -500,10 +499,8 @@ namespace WindowsProgramming
             var result = origin;
             if (args.trimCharacters.Length == 0)
                 return result.Trim();
-            foreach(var character in args.trimCharacters)
-            {
-                result.Trim('.');
-            }
+            char[] trimChars = args.trimCharacters.ToCharArray();
+            result = result.Trim(trimChars);
             return result;
         }
         public string Description
@@ -567,14 +564,21 @@ namespace WindowsProgramming
         {
             var args = methodArgs as MoveArgs;
             var result = origin;
-            if (args.Length > 0 && args.FromPos > 0 && args.FromPos < origin.Length && args.ToPos > 0 && args.ToPos < origin.Length )
+            if (args.Length > 0 && args.FromPos > 0 && args.FromPos < origin.Length + 1 && args.ToPos > 0 && args.ToPos <= origin.Length+1 )
             {
                 var substring = "";
                 for(int i = args.FromPos-1; i < args.Length; i++)
                 {
                     substring += result[i];
                 }
-                origin = origin.Insert(args.ToPos-1, substring);
+                if(args.ToPos == origin.Length)
+                {
+                    origin = origin + " " + substring;
+                }
+                else
+                {
+                    origin = origin.Insert(args.ToPos - 1, substring);
+                }
                 result = origin.Remove(args.FromPos - 1, args.Length);
             }
             return result;
@@ -584,7 +588,26 @@ namespace WindowsProgramming
             get
             {
                 var args = methodArgs as MoveArgs;
-                var result = $"Move {args.Length} character(s) \nfrom position {args.FromPos} to position {args.ToPos}";
+                var result = "";
+                int tempInt = 0;
+                if (!int.TryParse(args.ToPos.ToString(), out tempInt) || args.ToPos < 0)
+                {
+                    MessageBox.Show("Illegal 'Move to' position!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    args.ToPos = 0;
+                }
+                if (!int.TryParse(args.FromPos.ToString(), out tempInt) || args.FromPos < 0)
+                {
+                    MessageBox.Show("Illegal 'Move from' position!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    args.FromPos = 0;
+                }
+                if (!int.TryParse(args.Length.ToString(), out tempInt) || args.Length < 0)
+                {
+                    MessageBox.Show("Illegal 'Length' argument!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    args.Length = 0;
+                }
+
+                result = $"Move {args.Length} character(s) \nfrom position {args.FromPos} to position {args.ToPos}";
+
                 return result;
             }
         }
@@ -642,7 +665,20 @@ namespace WindowsProgramming
             get
             {
                 var args = methodArgs as NewNameArgs;
-                var result ="New item's name is:"+ args.NewName;
+                var result = "New item's name is: ";
+                if (args.NewName != null)
+                {
+                    foreach (var token in args.NewName)
+                    {
+                        if (token == '/' || token == '\\' || token == ':' || token == '*' || token == '"' || token == '?' || token == '<' || token == '>' || token == '|')
+                        {
+                            MessageBox.Show("New name contain special characters like:\n \\ / : * \" ? < > |", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            args.NewName = "DefaultName";
+                            return result;
+                        }
+                    }
+                }
+                result = result + args.NewName;
                 return result;
             }
         }
