@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WindowsProgamming.Properties {
+namespace WindowsProgramming.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

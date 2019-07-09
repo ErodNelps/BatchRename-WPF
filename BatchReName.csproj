@@ -61,6 +61,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConfirmWindow.xaml.cs">
+      <DependentUpon>ConfirmWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DetailSelector.cs" />
     <Compile Include="DetailUpdateWindow.xaml.cs">
       <DependentUpon>DetailUpdateWindow.xaml</DependentUpon>
@@ -68,6 +71,10 @@
     <Compile Include="HeightConverter.cs" />
     <Compile Include="MethodClass.cs" />
     <Compile Include="WidthFourConverter.cs" />
+    <Page Include="ConfirmWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DetailUpdateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

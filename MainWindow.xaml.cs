@@ -486,6 +486,11 @@ namespace WindowProjects
                 MessageBox.Show("Please add a method!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+            ConfirmWindow confirm = new ConfirmWindow(selectedFileList, selectedFolderList);
+            if(confirm.ShowDialog() == true)
+            {
+
+            }
             if (selectedFileList.Any())
             {
                 foreach (var item in selectedFileList)

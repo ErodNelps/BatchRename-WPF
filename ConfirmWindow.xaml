@@ -1,0 +1,73 @@
+﻿<Window x:Class="WindowsProgramming.ConfirmWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WindowsProgramming"
+        mc:Ignorable="d"
+        Title="ConfirmWindow" Height="400" Width="500">
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <Label DockPanel.Dock="Top" Content="Apply these changes?" FontSize="16"></Label>
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Height="50">
+                <Label Content="Collisions:" FontSize="16" VerticalContentAlignment="Center"></Label>
+                <ComboBox SelectedItem="Append suffix" Width="100" Margin="0,5,150,5">
+                    <ComboBoxItem Content="Keep original name"></ComboBoxItem>
+                    <ComboBoxItem Content="Append suffix"></ComboBoxItem>
+                </ComboBox>
+                <Button Content="Start batch" Height="40" Width="70" Margin="0,0,10,0"></Button>
+                <Button Content="Cancel" Height="40" Width="70" Margin="0,0,10,0"></Button>
+            </StackPanel>
+            <ListView x:Name="FileListBinding" ScrollViewer.HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Top" Height="150">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Height" Value="{Binding ActualHeight, Converter={StaticResource heightConverter}, ElementName=FilePathListBinding}" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.View>
+
+                    <GridView x:Name="gridView">
+                        <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FileListBinding}"
+                                            Header="Filename" DisplayMemberBinding="{Binding fileName}"/>
+                        <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FileListBinding}"
+                                            Header="New Name" DisplayMemberBinding="{Binding newName}"/>
+                        <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FileListBinding}"
+                                            Header="Error" DisplayMemberBinding="{Binding fileError}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Label Content="None" Foreground="Red"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <ListView x:Name="FolderListBinding" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Height" Value="{Binding ActualHeight, Converter={StaticResource heightConverter}, ElementName=FilePathListBinding}" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.View>
+
+                    <GridView>
+                        <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FolderListBinding}"
+                                            Header="Folder Name" DisplayMemberBinding="{Binding folderName}"/>
+                        <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FolderListBinding}"
+                                            Header="New Name" DisplayMemberBinding="{Binding newName}"/>
+                        <GridViewColumn Width="{Binding ActualWidth, Converter={StaticResource widthFourConverter}, ElementName=FolderListBinding}"
+                                            Header="Error" DisplayMemberBinding="{Binding folderError}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Label Content="None" Foreground="Red"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
+    </Grid>
+</Window>
