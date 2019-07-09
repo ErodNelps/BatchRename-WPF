@@ -28,11 +28,17 @@ namespace WindowProjects
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        void RaiseChangeEvent(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         public MainWindow()
         {
             InitializeComponent();
+            
             FilePathListBinding.ItemsSource = selectedFileList;
             FolderListBinding.ItemsSource = selectedFolderList;
             //Add Method
@@ -59,10 +65,9 @@ namespace WindowProjects
 
             PresetCombobox.ItemsSource = savedPresetFiles;
             PresetCombobox.DisplayMemberPath = "fileName";
-
             DataContext = this;
         }
-        
+
         BindingList<FileInformation> selectedFileList = new BindingList<FileInformation>();
         BindingList<FolderInformation> selectedFolderList = new BindingList<FolderInformation>();
         BindingList<IMethodAction> methodList = new BindingList<IMethodAction>() { };
@@ -416,6 +421,79 @@ namespace WindowProjects
                 }
             }
         }
+        public void replaceSameListName()
+        {
+            for (int i = 0; i < selectedFileList.Count - 1; i++)
+            {
+                //FileName Extension
+                string ext = selectedFileList[i].newExt;
+                int k = 0;
+
+                for (int j = i + 1; j < selectedFileList.Count; j++)
+                {
+                    if (String.Compare(selectedFileList[i].newName, selectedFileList[j].newName) == 0)
+                    {
+                        int num = 1;
+
+                        ////Get file name without extension
+                        //int index = fileList[i].IndexOf(ext);
+                        //string fileName = fileList[i].Remove(index);
+
+                        var tempNewName = selectedFileList[i].realName + num + ext;
+                        while (k < selectedFileList.Count)
+                        {
+                            if (String.Compare(tempNewName, selectedFileList[k].newName) == 0)
+                            {
+                                num++;
+                                tempNewName = selectedFileList[i].realName + num + ext;
+                                k = 0;
+                            }
+                            else
+                            {
+                                k++;
+                            }
+                        }
+                        selectedFileList[j].newName = tempNewName;
+                        k = 0;
+                        selectedFileList[j].UpdatePreview();
+                    }
+                }
+            }
+        }
+
+        public void replaceSameFolderName()
+        {
+            for (int i = 0; i < selectedFolderList.Count - 1; i++)
+            {
+                int k = 0;
+
+                for (int j = i + 1; j < selectedFolderList.Count; j++)
+                {
+                    if (String.Compare(selectedFolderList[i].newName, selectedFolderList[j].newName) == 0)
+                    {
+                        int num = 1;
+
+                        var tempNewName = selectedFolderList[i].newName + num;
+                        while (k < selectedFolderList.Count)
+                        {
+                            if (String.Compare(tempNewName, selectedFolderList[k].newName) == 0)
+                            {
+                                num++;
+                                tempNewName = selectedFolderList[i].newName + num;
+                                k = 0;
+                            }
+                            else
+                            {
+                                k++;
+                            }
+                        }
+                        selectedFolderList[j].newName = tempNewName;
+                        k = 0;
+                        selectedFolderList[j].UpdatePreview();
+                    }
+                }
+            }
+        }
         public void OnMethodListChanged()
         {
             try
@@ -428,31 +506,19 @@ namespace WindowProjects
                         {
                             if (action.isApplyToName == true)
                             {
-                                int collisionCount = 0;
                                 selectedFileList[i].realName = action.Process(selectedFileList[i].realName);
-                                selectedFileList[i].newName = selectedFileList[i].realName + selectedFileList[i].originalExtension;
-                                for (int j = 0; j < i; j++)
-                                {
-                                    if(string.Compare(selectedFileList[j].newName, selectedFileList[i].newName) == 0)
-                                    {
-                                        collisionCount++;
-                                    }
-                                }
-                                if (collisionCount > 0)
-                                {
-                                    selectedFileList[i].newName = String.Format($"{selectedFileList[i].realName} ({collisionCount.ToString()}){ selectedFileList[i].newExt} ");
-                                }
+                                selectedFileList[i].newName = selectedFileList[i].realName + selectedFileList[i].originalExtension;      
                             }
                             else if(action.isApplyToName == false)
                             {
                                 selectedFileList[i].newExt = action.Process(selectedFileList[i].newExt);
                                 selectedFileList[i].newName = selectedFileList[i].newName.Replace(selectedFileList[i].originalExtension, selectedFileList[i].newExt);
                             }
-
                         }
-                    }
+                    }                 
                     selectedFileList[i].UpdatePreview();
                 }
+
                 for (int i = 0; i < selectedFolderList.Count; i++)
                 {
                     foreach (var action in methodList)
@@ -464,6 +530,7 @@ namespace WindowProjects
                     }
                     selectedFolderList[i].UpdatePreview();
                 }
+                replaceSameFolderName();
             }
             catch (Exception ex)
             {
@@ -495,6 +562,7 @@ namespace WindowProjects
             {
                 foreach (var item in selectedFileList)
                 {
+                    replaceSameListName();
                     var originalName = item.fileName;
                     item.fileName = item.newName;
                     File.Move(item.filePath, item.filePath.Replace(originalName, item.newName));
@@ -505,6 +573,7 @@ namespace WindowProjects
             {
                 foreach (var item in selectedFolderList)
                 {
+                    //replaceSameFolderName();
                     item.folderName = item.newName;
                     Directory.Move(item.folderPath + item, item.folderPath);
                 }
@@ -529,9 +598,8 @@ namespace WindowProjects
         //ARROW BUTTON HANDLER
         private void SwapFile(int indexA, int indexB)
         {
-            var temp = selectedFileList[indexA];
-            selectedFileList[indexA] = selectedFileList[indexB];
-            selectedFileList[indexB] = temp;
+            selectedFileList.Insert(indexB, selectedFileList[indexA]);
+            selectedFileList.RemoveAt(indexA + 1);
         }
 
         private void UpFileButton_Click(object sender, RoutedEventArgs e)
@@ -554,6 +622,7 @@ namespace WindowProjects
                 SwapFile(selectedIndex, selectedIndex - 1);
                 FilePathListBinding.SelectedItem = selectedFileList[selectedIndex - 1];
             }
+            
         }
 
         private void DownFileButton_Click(object sender, RoutedEventArgs e)
@@ -573,7 +642,7 @@ namespace WindowProjects
             }
             else
             {
-                SwapFile(selectedIndex, selectedIndex + 1);
+                SwapFile(selectedIndex + 1, selectedIndex);
                 FilePathListBinding.SelectedItem = selectedFileList[selectedIndex + 1];
             }
         }
@@ -624,9 +693,8 @@ namespace WindowProjects
 
         private void SwapFolder(int indexA, int indexB)
         {
-            var temp = selectedFolderList[indexA];
-            selectedFolderList[indexA] = selectedFolderList[indexB];
-            selectedFolderList[indexB] = temp;
+            selectedFolderList.Insert(indexB, selectedFolderList[indexA]);
+            selectedFolderList.RemoveAt(indexA + 1);
         }
 
         private void UpFolderButton_click(object sender, RoutedEventArgs e)
@@ -668,7 +736,7 @@ namespace WindowProjects
             }
             else
             {
-                SwapFolder(selectedIndex, selectedIndex + 1);
+                SwapFolder(selectedIndex + 1, selectedIndex);
                 FolderListBinding.SelectedItem = selectedFolderList[selectedIndex + 1];
             }
         }
